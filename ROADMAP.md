@@ -4,7 +4,7 @@ This document outlines planned improvements and future directions for VRKA.
 
 ---
 
-## Current Release (v4.0.0)
+## Current Release (v4.0.1)
 - Native Qt 6 QML desktop interface with Day/Night theme toggle.
 - Single-worker FIFO task queue with persistent `tasks.json` storage and state recovery.
 - Automated passive Browser Fallback powered by uBlock Origin Lite content protection.

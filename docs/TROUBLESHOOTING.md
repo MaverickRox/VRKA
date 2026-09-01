@@ -26,6 +26,6 @@
 
 ## Submitting an Issue
 If an issue persists, report it on [GitHub Issues](https://github.com/MaverickRox/VRKA/issues/new/choose):
-- Include the exact VRKA version (`4.0.0`).
+- Include the exact VRKA version (`4.0.1`).
 - Provide reproduction steps.
 - Paste relevant activity log output with any personal paths, tokens, or cookies removed.
