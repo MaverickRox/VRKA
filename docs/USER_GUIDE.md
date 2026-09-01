@@ -41,3 +41,13 @@ When downloading from complex streaming websites where direct extractors are blo
 2. The page loads in a content-protected window with ad and popup filtering enabled.
 3. Once playback starts, VRKA detects the underlying stream manifest (HLS, DASH, or direct MP4) and hands it off to the download engine.
 4. The browser window closes automatically and download proceeds in the queue.
+
+---
+
+## Managed Media Runtime
+
+VRKA automatically provisions and maintains the required media processing toolchain (including yt-dlp and FFmpeg) in `%LOCALAPPDATA%\VRKA\runtime\`.
+
+- **Zero Manual Setup**: You do not need to manually download or configure FFmpeg on your system PATH.
+- **First-Run Provisioning**: On the first download requiring stream multiplexing or audio extraction, VRKA securely downloads and verifies the official FFmpeg static binaries.
+- **Subsequent Offline Use**: Once initialized, all post-processing operations execute locally and offline.

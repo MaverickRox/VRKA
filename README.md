@@ -43,6 +43,7 @@ VRKA is entirely self-contained, ad-free, and respects your privacy with zero ba
 
 - **Responsive Qt 6 QML Interface**: Hardware-accelerated UI with fluid animations, adaptive high-DPI scaling, and an integrated Day/Night theme toggle.
 - **Durable Task Queue**: Reliable single-worker FIFO scheduling with persistent state storage—downloads resume cleanly across application restarts.
+- **Managed Media Processing Runtime**: Automatically manages and cryptographically verifies required media processing components (yt-dlp and FFmpeg) in `%LOCALAPPDATA%\VRKA\runtime`—no manual tool installation or PATH configuration required.
 - **Audio Extraction & Transcoding**: Extract high-fidelity audio in MP3 (320, 256, 192, 128 kbps), WAV (uncompressed PCM), or FLAC formats.
 - **Passive Browser Fallback**: When direct extractor attempts are blocked by web challenges or complex player scripts, an isolated WebView2 session passively detects and captures media streams (HLS master manifests, DASH, and direct MP4) with built-in uBlock Origin Lite content protection.
 - **Managed Runtime Updater**: Check for official yt-dlp engine updates in-app, verify cryptographic checksums automatically, and roll back instantly if needed.

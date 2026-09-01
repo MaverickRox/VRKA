@@ -945,10 +945,80 @@ def open_path(path):
         pass
 
 
-def get_bundled_ffmpeg_dir():
-    """Return a folder containing ffmpeg.exe/ffprobe.exe if one is bundled
-    next to the app (either beside the .exe, beside the .py script, or inside the PyInstaller
-    .exe via --add-binary), otherwise None to fall back to the system PATH."""
+PINNED_FFMPEG_RELEASE = {
+    "version": "9.0.1",
+    "architecture": "win64",
+    "distribution": "GyanD/codexffmpeg",
+    "archive_url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.1/ffmpeg-9.0.1-essentials_build.zip",
+    "archive_sha256": "fec81ae03971d9dd4be3ebe02e263bd2ec1d789483f931bdba5f5715e65da2e9",
+    "archive_max_bytes": 150_000_000,
+}
+
+_FFMPEG_BOOTSTRAP_LOCK = threading.Lock()
+
+
+def _replace_file_safe(src, dst, retries=10, delay=0.1):
+    for i in range(retries):
+        try:
+            os.replace(src, dst)
+            return
+        except OSError:
+            if i == retries - 1:
+                raise
+            time.sleep(delay)
+
+
+def validate_ffmpeg_binary(path, expected_version=None):
+    candidate = Path(path)
+    if not candidate.is_file() or candidate.stat().st_size < 10_000_000:
+        return False, "", "The ffmpeg binary is missing or unexpectedly small."
+    if not _valid_windows_executable_header(candidate):
+        return False, "", "The candidate is not a valid Windows executable."
+    try:
+        res = _run_hidden([str(candidate), "-version"], timeout=20)
+        if res.returncode != 0:
+            return False, "", f"ffmpeg -version returned exit code {res.returncode}"
+        first_line = (res.stdout or "").strip().splitlines()[0] if (res.stdout or "").strip() else ""
+        if "ffmpeg version" not in first_line.lower():
+            return False, "", f"ffmpeg returned unexpected version string: {first_line}"
+        version = first_line.split()[2] if len(first_line.split()) >= 3 else "valid"
+        return True, version, ""
+    except Exception as exc:
+        return False, "", f"{type(exc).__name__}: {exc}"
+
+
+def validate_ffprobe_binary(path, expected_version=None):
+    candidate = Path(path)
+    if not candidate.is_file() or candidate.stat().st_size < 10_000_000:
+        return False, "", "The ffprobe binary is missing or unexpectedly small."
+    if not _valid_windows_executable_header(candidate):
+        return False, "", "The candidate is not a valid Windows executable."
+    try:
+        res = _run_hidden([str(candidate), "-version"], timeout=20)
+        if res.returncode != 0:
+            return False, "", f"ffprobe -version returned exit code {res.returncode}"
+        first_line = (res.stdout or "").strip().splitlines()[0] if (res.stdout or "").strip() else ""
+        if "ffprobe version" not in first_line.lower():
+            return False, "", f"ffprobe returned unexpected version string: {first_line}"
+        version = first_line.split()[2] if len(first_line.split()) >= 3 else "valid"
+        return True, version, ""
+    except Exception as exc:
+        return False, "", f"{type(exc).__name__}: {exc}"
+
+
+def resolve_ffmpeg_location():
+    """Return the directory containing validated ffmpeg and ffprobe binaries.
+    Prefers the local managed runtime in %LOCALAPPDATA%\\VRKA\\runtime, then
+    bundled beside the application, otherwise returns None."""
+    exe_suffix = ".exe" if os.name == "nt" else ""
+    ffmpeg_active = RUNTIME_DIR / f"ffmpeg{exe_suffix}"
+    ffprobe_active = RUNTIME_DIR / f"ffprobe{exe_suffix}"
+    if ffmpeg_active.is_file() and ffprobe_active.is_file():
+        valid_f, _, _ = validate_ffmpeg_binary(ffmpeg_active)
+        valid_p, _, _ = validate_ffprobe_binary(ffprobe_active)
+        if valid_f and valid_p:
+            return str(RUNTIME_DIR)
+
     exe_name = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
     if getattr(sys, "frozen", False):
         exe_dir = os.path.dirname(sys.executable)
@@ -959,6 +1029,126 @@ def get_bundled_ffmpeg_dir():
     if os.path.isfile(os.path.join(candidate, exe_name)):
         return candidate
     return None
+
+
+def get_bundled_ffmpeg_dir():
+    """Backwards-compatible locator returning the active FFmpeg directory."""
+    return resolve_ffmpeg_location()
+
+
+def ensure_ffmpeg_runtime(progress_callback=None):
+    """Ensure a verified managed FFmpeg/FFprobe runtime is provisioned and active."""
+    existing = resolve_ffmpeg_location()
+    if existing:
+        return existing
+    if not _FFMPEG_BOOTSTRAP_LOCK.acquire(blocking=False):
+        with _FFMPEG_BOOTSTRAP_LOCK:
+            existing = resolve_ffmpeg_location()
+            if existing:
+                return existing
+            raise RuntimeError("Concurrent FFmpeg provisioning in progress.")
+    archive_dest = RUNTIME_DIR / ".ffmpeg_archive.download"
+    exe_suffix = ".exe" if os.name == "nt" else ""
+    staging_ffmpeg = RUNTIME_DIR / f".ffmpeg.staging{exe_suffix}"
+    staging_ffprobe = RUNTIME_DIR / f".ffprobe.staging{exe_suffix}"
+    try:
+        RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
+        url = PINNED_FFMPEG_RELEASE["archive_url"]
+        expected_sha = PINNED_FFMPEG_RELEASE["archive_sha256"]
+        max_bytes = PINNED_FFMPEG_RELEASE["archive_max_bytes"]
+
+        if progress_callback:
+            progress_callback(f"Provisioning managed FFmpeg runtime (version {PINNED_FFMPEG_RELEASE['version']})...")
+
+        if archive_dest.exists():
+            archive_dest.unlink()
+
+        req = urllib.request.Request(
+            url, headers={"User-Agent": f"VRKA/{APP_VERSION}", "Accept": "application/octet-stream"}
+        )
+        h = hashlib.sha256()
+        written = 0
+        with _urlopen(req, timeout=60) as resp, open(archive_dest, "wb") as fh:
+            while chunk := resp.read(1024 * 1024):
+                written += len(chunk)
+                if written > max_bytes:
+                    raise ValueError("FFmpeg archive download exceeded safe size limit.")
+                h.update(chunk)
+                fh.write(chunk)
+            fh.flush()
+            os.fsync(fh.fileno())
+
+        actual_sha = h.hexdigest().lower()
+        if actual_sha != expected_sha.lower():
+            raise ValueError(
+                f"FFmpeg archive SHA-256 verification failed (expected {expected_sha}, got {actual_sha})."
+            )
+
+        if progress_callback:
+            progress_callback("FFmpeg archive integrity verified. Extracting binaries...")
+
+        import zipfile
+        with zipfile.ZipFile(archive_dest, "r") as z:
+            for member in z.infolist():
+                if ".." in member.filename or member.filename.startswith("/") or member.filename.startswith("\\"):
+                    raise ValueError(f"Path traversal detected in archive member: {member.filename}")
+                norm = member.filename.replace("\\", "/")
+                if norm.endswith("/bin/ffmpeg.exe") or norm == "bin/ffmpeg.exe":
+                    with z.open(member) as source_f, open(staging_ffmpeg, "wb") as target_f:
+                        shutil.copyfileobj(source_f, target_f)
+                elif norm.endswith("/bin/ffprobe.exe") or norm == "bin/ffprobe.exe":
+                    with z.open(member) as source_f, open(staging_ffprobe, "wb") as target_f:
+                        shutil.copyfileobj(source_f, target_f)
+
+        valid_f, ver_f, err_f = validate_ffmpeg_binary(staging_ffmpeg)
+        if not valid_f:
+            raise ValueError(f"Extracted ffmpeg binary failed validation: {err_f}")
+        valid_p, ver_p, err_p = validate_ffprobe_binary(staging_ffprobe)
+        if not valid_p:
+            raise ValueError(f"Extracted ffprobe binary failed validation: {err_p}")
+
+        active_ffmpeg = RUNTIME_DIR / f"ffmpeg{exe_suffix}"
+        active_ffprobe = RUNTIME_DIR / f"ffprobe{exe_suffix}"
+        previous_ffmpeg = RUNTIME_DIR / f"ffmpeg.previous{exe_suffix}"
+        previous_ffprobe = RUNTIME_DIR / f"ffprobe.previous{exe_suffix}"
+
+        if active_ffmpeg.exists():
+            if previous_ffmpeg.exists():
+                try:
+                    previous_ffmpeg.unlink()
+                except OSError:
+                    pass
+            _replace_file_safe(active_ffmpeg, previous_ffmpeg)
+        if active_ffprobe.exists():
+            if previous_ffprobe.exists():
+                try:
+                    previous_ffprobe.unlink()
+                except OSError:
+                    pass
+            _replace_file_safe(active_ffprobe, previous_ffprobe)
+
+        _replace_file_safe(staging_ffmpeg, active_ffmpeg)
+        _replace_file_safe(staging_ffprobe, active_ffprobe)
+
+        _save_runtime_state(
+            ffmpeg_version=ver_f,
+            ffmpeg_sha256=actual_sha,
+            ffmpeg_installed_at=int(time.time()),
+            ffmpeg_distribution=PINNED_FFMPEG_RELEASE["distribution"],
+        )
+
+        if progress_callback:
+            progress_callback(f"Managed FFmpeg runtime activated successfully (version {ver_f}).")
+
+        return str(RUNTIME_DIR)
+    finally:
+        for p in (archive_dest, staging_ffmpeg, staging_ffprobe):
+            try:
+                if p.exists():
+                    p.unlink()
+            except OSError:
+                pass
+        _FFMPEG_BOOTSTRAP_LOCK.release()
 
 
 def _find_aria2c():
@@ -3942,7 +4132,12 @@ def _standard_ytdlp_arguments(
     if opts.get("allow_remote_components", True):
         args += ["--remote-components", "ejs:github"]
 
-    ffmpeg_dir = get_bundled_ffmpeg_dir()
+    ffmpeg_dir = resolve_ffmpeg_location()
+    if not ffmpeg_dir:
+        try:
+            ffmpeg_dir = ensure_ffmpeg_runtime()
+        except Exception:
+            ffmpeg_dir = None
     if ffmpeg_dir:
         args += ["--ffmpeg-location", ffmpeg_dir]
 
@@ -4118,7 +4313,12 @@ def build_custom_ytdlp_command(task, output_folder):
         arguments, "--remote-components"
     ):
         command += ["--remote-components", "ejs:github"]
-    ffmpeg_dir = get_bundled_ffmpeg_dir()
+    ffmpeg_dir = resolve_ffmpeg_location()
+    if not ffmpeg_dir:
+        try:
+            ffmpeg_dir = ensure_ffmpeg_runtime()
+        except Exception:
+            ffmpeg_dir = None
     if ffmpeg_dir:
         command += ["--ffmpeg-location", ffmpeg_dir]
     command += arguments
@@ -4698,15 +4898,11 @@ class VRKADownloader:
             self.log_status_label.configure(text=f"  /  0000 OF {MAX_LOG_LINES} LINES")
 
     def check_ffmpeg(self):
-        bundled = get_bundled_ffmpeg_dir()
-        if bundled:
-            self.ui_queue.put(("log", f"Using bundled FFmpeg: {bundled}"))
-        elif shutil.which("ffmpeg") is None:
-            self.ui_queue.put(("log",
-                "WARNING: FFmpeg was not found (not bundled, not on PATH). Audio conversion, "
-                "embedding, and trimming will fail until it is available. See the setup instructions."))
+        ffmpeg_loc = resolve_ffmpeg_location()
+        if ffmpeg_loc:
+            self.ui_queue.put(("log", "Managed FFmpeg runtime is active and verified."))
         else:
-            self.ui_queue.put(("log", "FFmpeg detected on system PATH. You're all set!"))
+            self.ui_queue.put(("log", "Managed FFmpeg runtime will be automatically provisioned on first media operation."))
         deno_dir = get_bundled_deno_dir()
         if deno_dir:
             self.ui_queue.put(("log", f"Using bundled Deno runtime: {deno_dir}"))
