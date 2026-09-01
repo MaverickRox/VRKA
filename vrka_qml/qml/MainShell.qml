@@ -176,7 +176,7 @@ ApplicationWindow {
                             width: 8
                             height: 8
                             radius: 4
-                            color: Bridge.activeCount > 0 ? Theme.accent : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
+                            color: Bridge.activeCount > 0 ? Theme.success : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
                         }
 
                         Label {
@@ -184,7 +184,7 @@ ApplicationWindow {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true
-                            color: Bridge.activeCount > 0 ? Theme.accent : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
+                            color: Bridge.activeCount > 0 ? Theme.success : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
                         }
 
                         Item { Layout.fillWidth: true }
@@ -220,14 +220,14 @@ ApplicationWindow {
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Theme.smallSize
                                 font.bold: true
-                                color: Theme.text
+                                color: Bridge.queuedCount > 0 ? Theme.warning : Theme.text
                             }
                             Label {
                                 text: "QUEUED"
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Theme.microSize
                                 font.bold: true
-                                color: Theme.textDim
+                                color: Bridge.queuedCount > 0 ? Theme.warning : Theme.textDim
                             }
                         }
 
@@ -239,14 +239,14 @@ ApplicationWindow {
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Theme.smallSize
                                 font.bold: true
-                                color: Bridge.activeCount > 0 ? Theme.accent : Theme.text
+                                color: Bridge.activeCount > 0 ? Theme.success : Theme.text
                             }
                             Label {
                                 text: "ACTIVE"
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Theme.microSize
                                 font.bold: true
-                                color: Bridge.activeCount > 0 ? Theme.accent : Theme.textDim
+                                color: Bridge.activeCount > 0 ? Theme.success : Theme.textDim
                             }
                         }
 

@@ -133,7 +133,7 @@ ScrollView {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.sectionTitleSize
                             font.bold: true
-                            color: Theme.text
+                            color: Bridge.queuedCount > 0 ? Theme.warning : Theme.text
                         }
 
                         Label {
@@ -141,7 +141,7 @@ ScrollView {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true
-                            color: Theme.accent
+                            color: Bridge.queuedCount > 0 ? Theme.warning : Theme.textDim
                         }
                     }
                 }
@@ -168,7 +168,7 @@ ScrollView {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.sectionTitleSize
                             font.bold: true
-                            color: Bridge.activeCount > 0 ? Theme.accentHover : Theme.text
+                            color: Bridge.activeCount > 0 ? Theme.success : Theme.text
                         }
 
                         Label {
@@ -176,7 +176,7 @@ ScrollView {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true
-                            color: Theme.accentHover
+                            color: Bridge.activeCount > 0 ? Theme.success : Theme.textDim
                         }
                     }
                 }
