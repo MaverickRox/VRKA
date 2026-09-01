@@ -25,25 +25,27 @@ jobs:
           pip install -r requirements.txt
 
       - name: Reject unresolved publication placeholders
-        shell: pwsh
         run: |
-          $patterns = @(
-            "YOUR_GITHUB_USERNAME",
-            "YOUR_SECURITY_CONTACT",
-            "VERIFY_EXACT_VERSION",
-            "VERIFY_EXACT_FILENAME",
-            "VERIFY_EXACT_HASH",
-            "YYYY-MM-DD"
-          )
-          $failed = $false
-          foreach ($p in $patterns) {
-            $hits = git grep -n -I -- $p ':!.github/workflows/release-sanity.yml'
-            if ($LASTEXITCODE -eq 0) {
-              Write-Host $hits
-              $failed = $true
-            }
-          }
-          if ($failed) { throw "Unresolved publication placeholders found." }
+          python -c "
+          import subprocess, sys
+          patterns = [
+              'YOUR_GITHUB_USERNAME',
+              'YOUR_SECURITY_CONTACT',
+              'VERIFY_EXACT_VERSION',
+              'VERIFY_EXACT_FILENAME',
+              'VERIFY_EXACT_HASH',
+              'YYYY-MM-DD'
+          ]
+          failed = False
+          for p in patterns:
+              res = subprocess.run(['git', 'grep', '-n', '-I', '--', p, ':!.github/workflows/*'], capture_output=True, text=True)
+              if res.returncode == 0 and res.stdout.strip():
+                  print(f'Found placeholder {p}:\n{res.stdout}')
+                  failed = True
+          if failed:
+              sys.exit(1)
+          print('Placeholder scan passed: 0 unresolved placeholders found.')
+          "
 
       - name: Compile source
         run: python -m compileall -q .
