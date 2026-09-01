@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          if (Test-Path requirements.txt) {
+            python -m pip install -r requirements.txt
+          } else {
+            throw "requirements.txt is required for public CI. Add the verified build008 dependency file."
+          }
+          python -m pip check
+
+      - name: Compile source
+        run: python -m compileall -q .
+
+      - name: Run build008 tests
+        shell: pwsh
+        run: |
+          $tests = @("test_vrka.py", "test_vrka_20.py", "test_release_rework.py") |
+            Where-Object { Test-Path $_ }
+          if ($tests.Count -eq 0) {
+            throw "No build008 tests were found."
+          }
+          python -m unittest -v $tests

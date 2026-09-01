@@ -1,0 +1,39 @@
+name: Release sanity
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  sanity:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reject unresolved publication placeholders
+        shell: pwsh
+        run: |
+          $patterns = @(
+            "YOUR_GITHUB_USERNAME",
+            "YOUR_SECURITY_CONTACT",
+            "VERIFY_EXACT_VERSION",
+            "VERIFY_EXACT_FILENAME",
+            "VERIFY_EXACT_HASH",
+            "YYYY-MM-DD"
+          )
+          $failed = $false
+          foreach ($p in $patterns) {
+            $hits = git grep -n -I -- $p
+            if ($LASTEXITCODE -eq 0) {
+              Write-Host $hits
+              $failed = $true
+            }
+          }
+          if ($failed) { throw "Unresolved publication placeholders found." }
+
+      - name: Compile source
+        run: python -m compileall -q .

@@ -1,0 +1,9 @@
+{
+  "version": "3.0.0",
+  "build": "011",
+  "rows": 30,
+  "canvas_yview_scroll_p50_ms": 3.5,
+  "wheel_event_p50_ms": 0.098,
+  "wheel_event_p95_ms": 10.43,
+  "progress_200_events_total_ms": 1.87
+}

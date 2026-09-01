@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vrka"
+version = "4.0.0"
+description = "Lightweight, resilient desktop media downloader for Windows"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-or-later" }
+authors = [
+    { name = "MVRK" }
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Utilities"
+]
+dependencies = [
+    "PySide6>=6.6.0",
+    "yt-dlp>=2025.1.0",
+    "yt-dlp-ejs>=0.8.0",
+    "curl_cffi>=0.7.0",
+    "pywebview>=5.0.0",
+    "Pillow>=10.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MaverickRox/VRKA"
+Documentation = "https://github.com/MaverickRox/VRKA/tree/main/docs"
+Issues = "https://github.com/MaverickRox/VRKA/issues"

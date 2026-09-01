@@ -1,0 +1,20 @@
+{
+  "test_case": "download_res_2560x1440",
+  "target_client_size": {
+    "width": 2560,
+    "height": 1440
+  },
+  "theme": "dark",
+  "page_index": 0,
+  "computer_vision_metrics": {
+    "sidebar_detected_width": 220,
+    "content_detected_left": 225,
+    "content_detected_right": 2509,
+    "content_detected_width": 2284,
+    "main_available_width": 2340,
+    "horizontal_utilization_pct": 97.61,
+    "bottom_dead_space_px": 633,
+    "vertical_utilization_pct": 55.45,
+    "clipping_detected": false
+  }
+}

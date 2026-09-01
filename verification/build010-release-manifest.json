@@ -1,0 +1,120 @@
+{
+  "project": "VRKA",
+  "version": "2.0.0",
+  "build": "010",
+  "branch": "codex/vrka-2.0.0-build010-nonflutter-port",
+  "git_commit": "f76c410",
+  "git_commit_message": "fix: route fast browser-recoverable direct failures through automatic protected-browser fallback (Cloudflare 403 -> impersonation retry -> Unsupported URL now auto-invokes Browser Fallback on the same task)",
+  "built_at_utc": "2026-08-14T15:55:49Z",
+  "artifacts": [
+    {
+      "path": "dist/VRKA.exe",
+      "kind": "portable onefile executable",
+      "size_bytes": 116404530,
+      "sha256": "4e986055f4ddc4d3f1a765e74ce9e00aff00d7ff4ea35cd0ba93b5e239acf292"
+    },
+    {
+      "path": "installer_output/VRKA-2.0.0-build010-setup-Windows-x64.exe",
+      "kind": "Inno Setup installer (per-user default)",
+      "size_bytes": 117553782,
+      "sha256": "acbc84ed5c3d634710640c1a34b6dc7a8c37cb90569f8ae3df1862a9cf7d4f58"
+    },
+    {
+      "path": "dist/VRKA-2.0.0-build010-source.tar.gz",
+      "kind": "clean source archive (git archive of HEAD f76c410)",
+      "size_bytes": 77110003,
+      "sha256": "513aab1dfd1d66cd8ea6dd7b09ece933f082aedca18cc5dd93dd9555700ffa2b"
+    }
+  ],
+  "validation": {
+    "automated_tests": "124/124 PASS (complete gate after the fallback-eligibility fix: 121 prior + test_build010_browser_fallback.fast_direct_failure_routes_to_browser_fallback_same_task, fast_direct_failure_stays_one_failed_task_when_fallback_disabled, test_vrka_20.direct_failure_fallback_eligibility_classification)",
+    "icon_pipeline": "two-colour wolf verified at every production size and in every placement (EXE, installer, installed EXE, Start Menu shortcut, Installed Apps entry, window title bar, sidebar brand, dark and light themes); CONFIRMED BY USER MANUAL OBSERVATION (user launched the rebuilt application and verified the two-colour wolf renders correctly)",
+    "packaged_smokes": [
+      "dist/VRKA.exe __vrka_diagnostics__ (exit 0, frozen, managed runtime found and validated)",
+      "dist/VRKA.exe __ytdlp_cli__ --version (exit 0, bundled 2026.06.09)",
+      "live updater check+install against official yt-dlp endpoints into a throwaway runtime (SHA-256 verified, atomically activated; packaged binary then consumed the updated runtime via LOCALAPPDATA redirect; user runtime untouched)",
+      "FROZEN protected-browser capture-channel smoke: dist/VRKA.exe __vrka_protected_browser__ on https://www.w3schools.com/html/html5_video.asp - capture written WHILE THE WINDOW WAS OPEN (capture_seq:1), media candidates ranked (mov_bbb.mp4 video/mp4 206), ok:true, request_filter generic-protection-capture, snapshot 2026.08.01-2, navigation_log/blocked_popup_urls/contained_popup_urls/blocked_navigation_urls/player_state fields present (evidence instrumentation ships frozen), clean close and exit"
+    ],
+    "physical_gui_qa": {
+      "installer_wizard": "GUI install completed (mode select -> destination -> tasks -> ready -> install -> finish); wizard icon two-colour",
+      "installed_app_launch": "postinstall launch worked",
+      "window_icon": "two-colour (purple + black) via screenshot region and EXE resource",
+      "sidebar_brand": "two-colour in dark and light themes",
+      "download_workflow": "real download completed (flower.mp4, 1.1MB) with speed/ETA shown; file verified on disk",
+      "audio_only_mode": "GUI radio to Audio only -> yt-dlp ran -extract-audio with FLAC; flower.flac produced and header-verified (fLaC magic)",
+      "queue": "task appears once; QUEUED -> DOWNLOADING -> COMPLETED states verified",
+      "cancel_queued": "task cancelled before start (store: cancelled, attempts 0)",
+      "cancel_mid_download": "cancelled during download; partial file cleaned; no orphan yt-dlp processes",
+      "retry": "same identity re-queued and completed; exactly one History entry; no duplicates",
+      "history": "4 completed tasks -> 4 archived entries; cancelled task absent; no duplicate ids",
+      "quality_menu": "live Quality dropdown opened (Best Available / 2160p (4K) / 1440p (2K) / 1080p (Full HD) / 720p (HD) / ...); selected 720p (HD) -> persisted to settings.json on clean close -> restored after relaunch; pre-test value (Best Available) restored afterwards",
+      "settings_page": "renders; managed backend shown; startup check control present (not activated to avoid touching the real runtime)",
+      "browser_protection_card": "live GUI (source run): 'Browser Protection' card renders 'Active / snapshot 2026.08.01-2 / 72 compiled network entries / 7 media exceptions / generated 2026-08-01' (counts verified against the bundled snapshot: 72 block + 7 allow rules); Strict/Relaxed level dropdown opens and closes; Check & Update (validate-only) completes with no error; privacy footer shown; no raw HTTPS snapshot URL anywhere in ordinary Settings",
+      "about_card": "live GUI: About card renders (VRKA 2.0.0 / BUILD 008, copyright); 'Licenses & notices' button opened THIRD_PARTY_NOTICES.md in the OS default handler",
+      "theme": "dark -> light -> dark; brand remains two-colour; no recoloring",
+      "window_resize": "maximized (2568x1394) and restored without clipping; content reflowed",
+      "restart_recovery": "queue and history fully restored after clean close + relaunch; clean close with zero orphan processes",
+      "uninstall": "silent uninstall exit 0; app dir, Start Menu group, uninstall registry key removed; no processes left"
+    },
+    "live_browser_helper": "PASS - live protected-browser session against https://www.w3schools.com/html/html5_video.asp: ok:true; page title 'HTML Video' captured; 463 requests observed with 0 dropped (bounded capture); native WebView2 popup guard installed; generic-protection request filter active (snapshot 2026.08.01-2, 10 nuisances filtered); 50 media candidates incl. HLS m3u8 manifests ranked by the generic scorer; DRM correctly false; 16 cookies captured (bounded); helper exited 0 with no leftover processes",
+    "live_jav_guru_probe": "bounded live protected-browser run against the exact regression URL: page opened and fully rendered (title '[START-542-MR] ... Kamiki Rei ? Jav Guru' captured); ok:true; 131 requests observed with 0 dropped (bounded); webview2-native popup guard installed; 0 popup/popunder/redirect events observed during the bounded window; generic-protection filter active (snapshot 2026.08.01-2); 50 media candidates ranked incl. real HLS manifests (edge-hls/media-hls.growcdnssedge.com) and video/mp4; DRM false; 3 cookies captured (bounded; cf_clearance is a cookie NAME in the by-design handoff payload, never logged); helper exited 0 with zero leftover processes. The full transfer-start -> download-completion fallback episode was subsequently exercised live and is recorded in validation.hostile_browser_regression (PASS).",
+    "packaging_fix": "assets/browser_protection/bundled_snapshot.json and THIRD_PARTY_NOTICES.md are now bundled (VRKA-Windows.spec / VRKA-macOS.spec); confirmed in the frozen EXE via PyInstaller archive listing; the previous build silently shipped the protected-browser path without the snapshot (fail-open) - now fixed and proven by the frozen smoke above",
+    "build_identity_fix": "the app/package previously identified as 'VRKA 2.0.0 / BUILD 008' (stale inherited baseline metadata). Corrected to build 010 everywhere: APP_BUILD=010 (sidebar footer, About card, diagnostics build field); version_info.txt filevers/prodvers 2.0.0.10 + FileVersion '2.0.0.10'; VRKA.iss VersionInfoVersion 2.0.0.10 + OutputBaseFilename VRKA-2.0.0-build010-setup-Windows-x64; VRKA-macOS.spec CFBundleVersion 010; CI/build-script artifact names and tools/package_release.ps1 + tools/verify_packaged_icons.ps1 re-named to build010; tests updated (test_build_metadata, test_release_identity). Verified after rebuild: footer 'v2.0.0 / BUILD 010' (GUI OCR), About card 'VRKA 2.0.0 / BUILD 010' (GUI OCR), diagnostics build:010, EXE + installer FileVersion 2.0.0.10 / Product 2.0.0 / ProductName VRKA, Installed Apps 'VRKA 2.0.0' DisplayVersion 2.0.0 Publisher MVRK, installer filename VRKA-2.0.0-build010-setup-Windows-x64.exe, icons still two-colour (19 black + 203 purple), silent install/uninstall exit 0, full gate 103/103",
+    "performance": {
+      "diagnostics_cold_start": "4.69 s",
+      "gui_window_visible_cold": "5.09 s",
+      "idle_working_set": "79.5 MB (flat over 20 s - no leak)",
+      "idle_private_memory": "58.8 MB (flat over 20 s - no leak)",
+      "baseline_comparison": "historical frozen figures were 84.77 MB working-set avg and 57.25 MB private avg (54.00 min) - the earlier '81 MB vs 54-55 MB' comparison mixed working set with private memory; on the same metric build010 is at/below the historical band (79.5 vs 84.77 working set; 58.8 vs 57.25 private, +1.6 MB consistent with added browser-fallback/protection/updater modules, not a regression)",
+      "updater_check": "0.58 s against official endpoint"
+    },
+    "security_gate": "re-run clean on the final tree: no secrets/credentials (only the redaction-feature signed-URL parameter list and UI variable names); no shell=True / os.system / eval/exec; no debug/test bypasses; DRM never bypassed; raw HTTPS snapshot URL not exposed in ordinary Settings (asserted by test)",
+    "hostile_browser_regression": {
+      "target": "https://jav.guru/960290/start-542-mr-invited-to-drinks-by-my-harsh-power-harassing-female-boss-from-work-she-unexpectedly-transforms-when-i-hear-her-vent-turning-sweet-and-clingy-she-reverses-our-roles-for-repeated-begg/",
+      "status": "PASS (full live causal chain; all 14 items evidenced separately, plus URL/navigation instrumentation per the corrected acceptance rule)",
+      "page_load": "PASS - page opened and fully rendered under the protected browser",
+      "popup_new_window_containment": "PASS - cross-site stripchat popunder BLOCKED (blocked_popup:1, contained_popup:0); page stayed on JAV.GURU; 3 site cookies, zero stripchat cookies; single window throughout",
+      "redirect_containment": "PASS - no navigation away from the intended media page after automated Play",
+      "ad_nuisance_script_blocking": "PASS - generic-protection-capture filter active (snapshot 2026.08.01-2); nuisance/script requests filtered while the player kept working",
+      "media_detection_timing": "PASS - no false candidate before usable media; intended HLS master detected when available; init fragments rejected",
+      "candidate_ranking": "PASS - segment-shaped URLs collapsed into HLS parents; coherent HLS masters ranked first; ambiguous -> ranked walk (no task failure)",
+      "same_task_handoff": "PASS - one logical task preserved end to end; no requeue; no duplicate Queue row; one History identity",
+      "transfer_start_validation": "PASS - before_dl marker accepted as transfer-start evidence; real m3u8 validated (ok:true) before handoff",
+      "browser_close_condition": "PASS - browser auto-closed ONLY after validated transfer start (browser_auto_closed:true); capture occurred while window open (payload_seen_before_window_close:true); no manual close/Retry path",
+      "automatic_resume_recovery": "PASS - expired segment rejected, next stabilized candidate (HLS master) tried on the same task",
+      "download_continued": "PASS - transfer ran 60 s uncancelled by watchdog with real byte progress (transfer_max_bytes_observed 4,980,736 = 4.98 MB)",
+      "cleanup": "PASS - zero orphan browser/helper processes; zero leftover windows; staging cleaned on cancel",
+      "site_specific_logic": "none added; all fixes are generic (popup policy, ranking, watchdog, format selection)",
+      "evidence_instrumentation": "PASS - helper records every top-level navigation attempt and popup event with URL/action/timestamp (navigation_log, bounded 64) plus blocked_popup_urls/contained_popup_urls/blocked_navigation_urls (bounded 8) and per-media-element player_state in every capture; commit always writes a final live snapshot",
+      "in_window_hijack_containment": "PASS - the observed JAV.GURU -> stripchatgirls.com same-window transition (pre-fix failure mode) is blocked in both the new-window and in-window navigation channels (stripchat.com/stripchatgirls.com in the generic UNSOLICITED_POPUP_HOST_SUFFIXES popunder-network list; deterministic test in test_vrka_20.py)",
+      "live_evidence_final": "PASS - instrumented live run on the exact JAV.GURU target: URL before and after Play both remained https://jav.guru/960290/... (intended_page_preserved True); session navigation log recorded a REAL popunder attempt from s.pemsrv.com/v1/link.php (scr_info decodes to remotepopunderjs|30408707) with event:popup action:block and timestamp - observed AND blocked while the page stayed on jav.guru; all 16 ranked candidates on the site own HLS CDN (edge-hls/media-hls.growcdnssedge.com; zero third-party media domains); transfer ran with real bytes (5.0 MB observed); browser auto-closed after validated transfer start; one logical task; zero orphans",
+      "server_selection_and_play": "PASS - live driver performs separate DOM-derived actions in order: (1) SERVER selection - clicked the episode stream tab \"STREAM VO\" (rect 286,673 from interactive_elements); (2) selected player loads; (3) PLAY - located the player surface derived from the measured layout (stream-tab row + sidebar column; viewport 365,412), never a fixed window center and never an already-playing sidebar cam; (4) verified the intended episode page/player remained present (page_url + title preserved, 18-20 candidates). Timing: server t=7.5s, play t=11.5s, episode verify t=13.0s, transfer start t=13.5s, browser auto-closed same second, 5.0 MB real bytes, single task, zero orphans"
+    },
+    "fallback_eligibility_fix": {
+      "defect": "manual production failure on https://jav.guru/1035117/snos-334-...-seto-kanna/: direct 403 Cloudflare -> impersonation retry -> Unsupported URL ended terminal ERROR with Retry and NO protected-browser fallback",
+      "fix": "AutomaticFallbackExecutor now routes DirectPathEligibleForFallback through the same same-task fallback path; direct_failure_is_browser_recoverable classifies cloudflare/http/cookies/expired always eligible, unsupported/unknown eligible only with a prior browser-relevant error, drm/impersonation terminal; YTDLPCommandError threads prior_categories through the impersonation retry",
+      "live_evidence": [
+        "exact URL through the real core path (real WebView2 helper, real network): direct failed fast exactly as reported (403 Cloudflare -> impersonation retry -> Unsupported URL, category unsupported)",
+        "AUTOMATIC protected-browser fallback invoked (no manual Retry, no ERROR-terminal state)",
+        "browser window opened and auto-captured while open (capture_seq 1 and 2; 12 then 17-20 candidates on the site's own growcdnssedge.com HLS CDN)",
+        "real HLS master validated (ok:true) -> transfer start validated with session cookies/UA/referer/origin -> browser auto-closed the same second (timeline appeared 21:14:52, disappeared 21:15:06) -> handoff resumed the existing task",
+        "exactly ONE task in the durable store; bounded cancel; zero orphan processes/windows"
+      ],
+      "note": "the auto-captured candidate on this episode page is the sidebar live-cam HLS stream; its transfer ran until the watchdog 120 s TRANSFER timeout killed the idle stream - the episode media itself requires the user's server/Play interaction (interactive workflow validated on the 960290 regression URL)",
+      "status": "PASS (release-blocking defect fixed in the packaged build)"
+    }
+  },
+  "release_status": {
+    "decision": "READY with documented NOT OBSERVED items below; publish only after the recommended clean-machine checks",
+    "not_observed": [
+      {
+        "item": "Windows display scaling 125% / 150%",
+        "reason": "current display fixed at 100%; changing system DPI requires sign-out (disruptive). QA list marks this \"where available\". Recommended as a clean-machine release check."
+      },
+      {
+        "item": "clean-machine install",
+        "reason": "no clean Windows environment available in this session; explicitly permitted to remain NOT OBSERVED by the release QA instructions."
+      }
+    ]
+  }
+}

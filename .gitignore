@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Captures
+.test_tmp/
+.pytest_cache/
+.coverage
+htmlcov/
+*.profile/
+test_*.json
+*.log
+
+# Build & Release Output
+outputs/
+installer_output/
+*.iss.tmp
+_MEI*/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local secrets & user data
+.env
+*.pfx
+*.p12
+*.pem
+cookies.txt
+*.cookie

@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you reference VRKA in research, benchmarks, or software catalogues, please cite it as below."
+title: "VRKA"
+abstract: "Lightweight, resilient desktop media downloader for Windows with Qt 6 QML interface, strict-FIFO scheduling, and passive browser fallback."
+version: "4.0.0"
+date-released: "2026-09-01"
+license: "GPL-3.0-or-later"
+repository-code: "https://github.com/MaverickRox/VRKA"
+url: "https://github.com/MaverickRox/VRKA"
+authors:
+  - name: "MVRK"

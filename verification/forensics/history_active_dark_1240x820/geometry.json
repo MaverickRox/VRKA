@@ -1,0 +1,20 @@
+{
+  "test_case": "history_active_dark_1240x820",
+  "target_client_size": {
+    "width": 1240,
+    "height": 820
+  },
+  "theme": "dark",
+  "page_index": 2,
+  "computer_vision_metrics": {
+    "sidebar_detected_width": 220,
+    "content_detected_left": 225,
+    "content_detected_right": 1193,
+    "content_detected_width": 968,
+    "main_available_width": 1020,
+    "horizontal_utilization_pct": 94.9,
+    "bottom_dead_space_px": 494,
+    "vertical_utilization_pct": 39.76,
+    "clipping_detected": false
+  }
+}

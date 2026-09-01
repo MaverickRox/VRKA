@@ -1,0 +1,141 @@
+{
+  "result_path": "verification\\manual-seek-session.json",
+  "page_url": "https://anikoto.cz/watch/one-piece-odmau/ep-1",
+  "page_title": "Anime One Piece Episode 1 Watch Online Free - Anikoto",
+  "ok": true,
+  "manual_closed": true,
+  "capture_attach_error": "AttributeError: 'NoneType' object has no attribute 'BrowserView'",
+  "observed_request_count": 236,
+  "media_candidates": 2,
+  "captured_objects": 36,
+  "captured_bytes": 27749888,
+  "capture_stopped": null,
+  "capture_errors": [],
+  "http_status_distribution": {
+    "206": 1,
+    "200": 35
+  },
+  "object_kinds": {
+    "fmp4": 1,
+    "playlist": 2,
+    "ts-segment": 33
+  },
+  "capture_window_seconds": 113.0,
+  "playlists_captured": 2,
+  "playlist_coverage": [
+    {
+      "playlist": "df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/master.m3u8",
+      "bytes": 257,
+      "total_segments": 1,
+      "captured_segments": 0,
+      "coverage_percent": 0.0,
+      "total_duration_seconds": 0,
+      "endlist": false,
+      "discontinuities": false
+    },
+    {
+      "playlist": "396431415e770c6dd/61b87186ab260d05003427e16ccf5657/index-f1-v1-a1.m3u8",
+      "bytes": 42798,
+      "total_segments": 321,
+      "captured_segments": 33,
+      "coverage_percent": 10.3,
+      "total_duration_seconds": 1478.0,
+      "endlist": true,
+      "discontinuities": false
+    }
+  ],
+  "authoritative_coverage": {
+    "total_segments": 321,
+    "captured_segments": 33,
+    "coverage_percent": 10.3,
+    "first_captured_index": 0,
+    "last_captured_index": 181,
+    "captured_ranges": [
+      "0-11",
+      "161-181"
+    ],
+    "missing_ranges": [
+      "12-160",
+      "182-320"
+    ],
+    "missing_count": 288
+  },
+  "seek_diagnostic": {
+    "question": "did the manual ~50% seek cause later-segment fetches?",
+    "index_seconds_after_start_sample": [
+      [
+        0,
+        0.5
+      ],
+      [
+        1,
+        1.1
+      ],
+      [
+        2,
+        1.2
+      ],
+      [
+        3,
+        1.3
+      ],
+      [
+        4,
+        5.5
+      ],
+      [
+        5,
+        7.6
+      ],
+      [
+        6,
+        12.1
+      ],
+      [
+        7,
+        13.1
+      ],
+      [
+        "...",
+        ""
+      ],
+      [
+        174,
+        74.5
+      ],
+      [
+        175,
+        79.8
+      ],
+      [
+        176,
+        83.8
+      ],
+      [
+        177,
+        92.4
+      ],
+      [
+        178,
+        96.1
+      ],
+      [
+        179,
+        99.4
+      ],
+      [
+        180,
+        102.5
+      ],
+      [
+        181,
+        113.0
+      ]
+    ],
+    "later_half_captured_count": 21,
+    "interpretation": "YES - segments from the later playlist half were captured after session start"
+  },
+  "assembly": {
+    "error": "ImportError: cannot import name 'assemble_browser_capture' from 'vrka_core.media_assembly' (F:\\Projects\\VRKA\\VRKA-2.0.0-build009-work\\VRKA-3.0\\vrka_core\\media_assembly.py)"
+  }
+}

@@ -1,0 +1,1540 @@
+{
+  "ok": true,
+  "page_url": "https://anikoto.cz/watch/one-piece-odmau/ep-1",
+  "page_title": "Anime One Piece Episode 1 Watch Online Free - Anikoto",
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0",
+  "referer": "https://anikoto.cz/watch/one-piece-odmau/ep-1",
+  "origin": "https://anikoto.cz",
+  "cookies": [
+    {
+      "domain": "anikoto.cz",
+      "include_subdomains": false,
+      "path": "/",
+      "secure": false,
+      "expires": 0,
+      "name": "country_code",
+      "value": "IN"
+    }
+  ],
+  "media_candidates": [
+    {
+      "url": "https://cdn.watching.onl/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/master.m3u8",
+      "headers": {},
+      "content_type": "application/vnd.apple.mpegurl",
+      "status": 200,
+      "source": "response",
+      "score": 188,
+      "kind": "HLS",
+      "protected": true,
+      "request_count": 1,
+      "observed_offset": 10.216,
+      "first_seen_seq": 1
+    },
+    {
+      "url": "https://cdn.watching.onl/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/index-f1-v1-a1.m3u8",
+      "headers": {},
+      "content_type": "application/vnd.apple.mpegurl",
+      "status": 200,
+      "source": "response",
+      "score": 180,
+      "kind": "HLS",
+      "protected": true,
+      "request_count": 1,
+      "observed_offset": 10.311,
+      "first_seen_seq": 1
+    }
+  ],
+  "drm_detected": false,
+  "observed_request_count": 236,
+  "rejected_junk_count": 0,
+  "dropped_request_count": 0,
+  "blocked_popup_count": 0,
+  "contained_popup_count": 0,
+  "blocked_navigation_count": 0,
+  "blocked_popup_urls": [],
+  "contained_popup_urls": [],
+  "blocked_navigation_urls": [],
+  "navigation_log": [
+    {
+      "url": "https://anikoto.cz/watch/one-piece-odmau/ep-1",
+      "event": "navigation",
+      "action": "allow",
+      "ts": 1787676709.351935
+    }
+  ],
+  "player_state": [],
+  "interactive_elements": [
+    {
+      "tag": "a",
+      "text": "Random",
+      "aria": "",
+      "rect": {
+        "x": 220,
+        "y": 17,
+        "w": 78,
+        "h": 21
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Watch2gether",
+      "aria": "",
+      "rect": {
+        "x": 318,
+        "y": 18,
+        "w": 111,
+        "h": 20
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Community",
+      "aria": "",
+      "rect": {
+        "x": 449,
+        "y": 18,
+        "w": 93,
+        "h": 20
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Sign in",
+      "aria": "",
+      "rect": {
+        "x": 989,
+        "y": 13,
+        "w": 70,
+        "h": 30
+      }
+    },
+    {
+      "tag": "div",
+      "text": "Auto Skip",
+      "aria": "",
+      "rect": {
+        "x": 175,
+        "y": 665,
+        "w": 73,
+        "h": 34
+      }
+    },
+    {
+      "tag": "div",
+      "text": "Prev",
+      "aria": "",
+      "rect": {
+        "x": 301,
+        "y": 665,
+        "w": 43,
+        "h": 34
+      }
+    },
+    {
+      "tag": "div",
+      "text": "Next",
+      "aria": "",
+      "rect": {
+        "x": 348,
+        "y": 665,
+        "w": 45,
+        "h": 34
+      }
+    },
+    {
+      "tag": "div",
+      "text": "Watch Together",
+      "aria": "Watch Together",
+      "rect": {
+        "x": 939,
+        "y": 665,
+        "w": 110,
+        "h": 34
+      }
+    },
+    {
+      "tag": "label",
+      "text": "SUB",
+      "aria": "",
+      "rect": {
+        "x": 308,
+        "y": 727,
+        "w": 70,
+        "h": 18
+      }
+    },
+    {
+      "tag": "label",
+      "text": "DUB",
+      "aria": "",
+      "rect": {
+        "x": 308,
+        "y": 782,
+        "w": 70,
+        "h": 18
+      }
+    },
+    {
+      "tag": "a",
+      "text": "Kiwi Sub",
+      "aria": "",
+      "rect": {
+        "x": 388,
+        "y": 829,
+        "w": 95,
+        "h": 28
+      }
+    },
+    {
+      "tag": "button",
+      "text": "\u00d7",
+      "aria": "Close",
+      "rect": {
+        "x": 1025,
+        "y": 888,
+        "w": 18,
+        "h": 18
+      }
+    },
+    {
+      "tag": "button",
+      "text": "Sub & Dub",
+      "aria": "",
+      "rect": {
+        "x": 20,
+        "y": 938,
+        "w": 83,
+        "h": 24
+      }
+    },
+    {
+      "tag": "button",
+      "text": "001-100",
+      "aria": "",
+      "rect": {
+        "x": 108,
+        "y": 938,
+        "w": 74,
+        "h": 24
+      }
+    },
+    {
+      "tag": "li",
+      "text": "1",
+      "aria": "I'm Luffy! The Man Who's Gonna Be King o",
+      "rect": {
+        "x": 20,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "1",
+      "aria": "",
+      "rect": {
+        "x": 22,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "2",
+      "aria": "Enter the Great Swordsman! Pirate Hunter",
+      "rect": {
+        "x": 123,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "2",
+      "aria": "",
+      "rect": {
+        "x": 125,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "3",
+      "aria": "Morgan versus Luffy! Who",
+      "rect": {
+        "x": 226,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "3",
+      "aria": "",
+      "rect": {
+        "x": 228,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "4",
+      "aria": "Luffy",
+      "rect": {
+        "x": 329,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "4",
+      "aria": "",
+      "rect": {
+        "x": 331,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "5",
+      "aria": "A Terrifying Mysterious Power! Captain B",
+      "rect": {
+        "x": 432,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "5",
+      "aria": "",
+      "rect": {
+        "x": 434,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "6",
+      "aria": "Desperate Situation! Beast Tamer Mohji v",
+      "rect": {
+        "x": 534,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "6",
+      "aria": "",
+      "rect": {
+        "x": 536,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "7",
+      "aria": "Epic Showdown! Swordsman Zoro vs. Acroba",
+      "rect": {
+        "x": 637,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "7",
+      "aria": "",
+      "rect": {
+        "x": 639,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "8",
+      "aria": "Who is the Victor? Devil Fruit Power Sho",
+      "rect": {
+        "x": 740,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "8",
+      "aria": "",
+      "rect": {
+        "x": 742,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "9",
+      "aria": "The Honorable Liar? Captain Usopp!",
+      "rect": {
+        "x": 843,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "9",
+      "aria": "",
+      "rect": {
+        "x": 845,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "10",
+      "aria": "The Weirdest Guy Ever! Jango the Hypnoti",
+      "rect": {
+        "x": 946,
+        "y": 983,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "10",
+      "aria": "",
+      "rect": {
+        "x": 948,
+        "y": 985,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "11",
+      "aria": "Expose the Plot! Pirate Butler, Captain ",
+      "rect": {
+        "x": 20,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "11",
+      "aria": "",
+      "rect": {
+        "x": 22,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "12",
+      "aria": "Clash with the Black Cat Pirates! The Gr",
+      "rect": {
+        "x": 123,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "12",
+      "aria": "",
+      "rect": {
+        "x": 125,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "13",
+      "aria": "The Terrifying Duo! Meowban Brothers vs.",
+      "rect": {
+        "x": 226,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "13",
+      "aria": "",
+      "rect": {
+        "x": 228,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "14",
+      "aria": "Luffy Back in Action! Miss Kaya",
+      "rect": {
+        "x": 329,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "14",
+      "aria": "",
+      "rect": {
+        "x": 331,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "15",
+      "aria": "Beat Kuro! Usopp the Man",
+      "rect": {
+        "x": 432,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "15",
+      "aria": "",
+      "rect": {
+        "x": 434,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "16",
+      "aria": "Protect Kaya! The Usopp Pirates",
+      "rect": {
+        "x": 534,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "16",
+      "aria": "",
+      "rect": {
+        "x": 536,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    },
+    {
+      "tag": "li",
+      "text": "17",
+      "aria": "Angry Explosion! Kuro vs. Luffy! How it ",
+      "rect": {
+        "x": 637,
+        "y": 1013,
+        "w": 103,
+        "h": 30
+      }
+    },
+    {
+      "tag": "a",
+      "text": "17",
+      "aria": "",
+      "rect": {
+        "x": 639,
+        "y": 1015,
+        "w": 99,
+        "h": 26
+      }
+    }
+  ],
+  "dom_overlays": [],
+  "popup_guard": "webview2-native",
+  "error": "",
+  "autoplay_widget_page": false,
+  "view_size": {
+    "w": 1084,
+    "h": 721
+  },
+  "unclassified_media_count": 0,
+  "unclassified_media_hosts": [],
+  "popup_guard_error": "",
+  "ubol_extension": {
+    "installed": true,
+    "id": "lohjhbklhcfkbaofogmmaegebbioapkg",
+    "enabled": "True",
+    "name": "uBlock Origin Lite"
+  },
+  "ubol_error": "",
+  "ubol_dir": "C:\\Users\\Shukla\\AppData\\Local\\VRKA\\browser-ext\\ubol-34c078df68",
+  "observer_extension": {
+    "project": "puemos/hls-downloader",
+    "version": "5.5.0",
+    "installed": true,
+    "dir": "C:\\Users\\Shukla\\AppData\\Local\\VRKA\\browser-ext\\puemos-hls-downloader-5.5.0-165de38d93",
+    "error": "",
+    "runtime_installed": true,
+    "enabled": null,
+    "id": ""
+  },
+  "captured_dom_urls": [
+    "https://anikoto.cz/AnikotoTheme/assets/css/style.css",
+    "https://anikoto.cz/AnikotoTheme/assets/images/bg-footer.jpg?1",
+    "https://anikoto.cz/AnikotoTheme/assets/images/favicon.png",
+    "https://anikoto.cz/AnikotoTheme/assets/images/logo.png",
+    "https://anikoto.cz/ajax/episode/list/1642?vrf=",
+    "https://anikoto.cz/ajax/reactions/list?type=anime&id=1642",
+    "https://anikoto.cz/ajax/server/list?servers=cTFsbUc1WkRESy9LdjF0QWw0WHcva1drYWRyMzRSTE5IUFRHSVlLRVkxbWxheXV2MkJXUjRpZUxvV043TFA1QUdvaEVqMXJHMmlNZ2FVQ0VMeldsUjl4M1Fub2JXdWl5Q3A1S1o5VUxvMVFDcGRJMWpNUGJQVzlKVHphcVJtdjdZVTdKSTQ4K0lHbEJmVEpnTmZvc1BIdndTMDBDQ1N4TXd5blF6L0I3aVRFPQ",
+    "https://anikoto.cz/ajax/server?get=MTF1dkFtaW9BRTZPbzJJRElFZUZrOWdjeldjOERLaWNMMXFNbVB3WUJqOHZoTmFvRkZwdFlNWkZKMUJNRzVKTmd2UmhpYy8vMGF0Mk1ka2ZDSkZ4MzllTHBqVlA3b0dlOC9BdUpEbkFzR3VKZTlxR01kN2l2VVJxTmdzYnBQT1I5d2cxOHFraThWYUZsU2NISktQNUVkMno3MFg5cFMyYlhJUkNrQUhKdXBvPQ",
+    "https://anikoto.cz/anikoto/css/comment.css?v=3.26",
+    "https://anikoto.cz/anikoto/css/notifications-bell.css?v=1.11",
+    "https://anikoto.cz/anikoto/js/comment.js?v=3.8",
+    "https://anikoto.cz/anikoto/js/main.js?v=1.111",
+    "https://anikoto.cz/anikoto/js/mapper.js?v=3.0",
+    "https://anikoto.cz/anikoto/js/notifications-bell.js?v=2.3",
+    "https://anikoto.cz/anikoto/js/watch-mana.min.js?v=8",
+    "https://anikoto.cz/anime/getinfo/1642",
+    "https://anikoto.cz/api/seasons/1642",
+    "https://anikoto.cz/api/watch-order/1642",
+    "https://anikoto.cz/auth/ajax/user/panel",
+    "https://buttons-config.sharethis.com/js/65f332dafa10560019e9ebb0.js",
+    "https://cdn.anipixcdn.co/thumbnail/01697c65fd7b9f2459f6f48cbd9e390c.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/01f78be6f7cad02658508fe4616098a9.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/038a237670b78d07d7e5fd9092e82bdd.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/0c3931d34559a42829c68495a51b5d9b.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/1bf0c59238dd24a7f09a889483a50e8f.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/1e913e1b06ead0b66e30b6867bf63549.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/20c9f5700da1088260df60fcc5df2b53.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/242c100dc94f871b6d7215b868a875f8.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/26e359e83860db1d11b6acca57d8ea88.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/27c602eea419202c123f75f17df800e0.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/28c3b99299b5b27798e3792d87b79236.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/2dbf21633f03afcf882eaf10e4b5caca.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/2f10158c59d8ce7d40687769eb8e0424.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/2f885d0fbe2e131bfc9d98363e55d1d4.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/38651c4450f87348fcbe1f992746a954.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/3889837143074f2ccb5989d34dc6e82b.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/3b5020bb891119b9f5130f1fea9bd773.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/3c8aad396b170bc506e316d9225735b0.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/3cf166c6b73f030b4f67eeaeba301103.jpg",
+    "https://cdn.anipixcdn.co/thumbnail/3fe94a002317b5f9259f82690aeea4cd.jpg"
+  ],
+  "player_screen_rect": {
+    "x": 148,
+    "y": 249,
+    "w": 1049,
+    "h": 577
+  },
+  "media_capture": {
+    "active": true,
+    "objects": [
+      {
+        "url": "blob:https://megaplay.buzz/db28b669-3697-41f9-8040-7b01b1d6afa0",
+        "status": 206,
+        "content_type": "video/mp4",
+        "bytes": 1493,
+        "object": "obj-8900d616f14717fc1cd2",
+        "request_header_names": [
+          "Accept-Encoding",
+          "Range",
+          "User-Agent"
+        ],
+        "seq": 0,
+        "ts": 1787676718.583582
+      },
+      {
+        "url": "https://cdn.watching.onl/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/master.m3u8",
+        "status": 200,
+        "content_type": "",
+        "bytes": 257,
+        "object": "obj-3bf23d853fa8dc13b68e",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 1,
+        "ts": 1787676718.7412622
+      },
+      {
+        "url": "https://cdn.watching.onl/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/index-f1-v1-a1.m3u8",
+        "status": 200,
+        "content_type": "",
+        "bytes": 42798,
+        "object": "obj-500b9c9ef25225f51380",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 2,
+        "ts": 1787676718.835861
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-1-f1-v1-a1.jpg",
+        "status": 200,
+        "content_type": "",
+        "bytes": 1161464,
+        "object": "obj-b5abbae443906f17cf58",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 3,
+        "ts": 1787676719.056404
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-4-f1-v1-a1.html",
+        "status": 200,
+        "content_type": "",
+        "bytes": 815544,
+        "object": "obj-4d7d1dc27f9b86cdc715",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 4,
+        "ts": 1787676719.6794782
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-7-f1-v1-a1.js",
+        "status": 200,
+        "content_type": "",
+        "bytes": 418488,
+        "object": "obj-a7f20cc1e6bacb2b3236",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 5,
+        "ts": 1787676719.8113084
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-8-f1-v1-a1.css",
+        "status": 200,
+        "content_type": "",
+        "bytes": 2514389,
+        "object": "obj-7cf3e7e17f9bf3c7d5d8",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 6,
+        "ts": 1787676719.916127
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-10-f1-v1-a1.txt",
+        "status": 200,
+        "content_type": "",
+        "bytes": 574904,
+        "object": "obj-eec5a21b9b873a0fb983",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 7,
+        "ts": 1787676724.1330383
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-11-f1-v1-a1.png",
+        "status": 200,
+        "content_type": "",
+        "bytes": 2130040,
+        "object": "obj-12442541f7563f21af64",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 8,
+        "ts": 1787676726.1382117
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-12-f1-v1-a1.webp",
+        "status": 200,
+        "content_type": "",
+        "bytes": 478648,
+        "object": "obj-c463cde1a69fd0032c67",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 9,
+        "ts": 1787676730.73007
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-13-f1-v1-a1.ico",
+        "status": 200,
+        "content_type": "",
+        "bytes": 1877368,
+        "object": "obj-3f946662c308f6ca269d",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 10,
+        "ts": 1787676731.7257266
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-15-f1-v1-a1.jpg",
+        "status": 200,
+        "content_type": "",
+        "bytes": 999032,
+        "object": "obj-f4b00ff9dbd287f73eb8",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 11,
+        "ts": 1787676737.2200482
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-17-f1-v1-a1.html",
+        "status": 200,
+        "content_type": "",
+        "bytes": 1387064,
+        "object": "obj-aa1c76fe694c5f7f7106",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 12,
+        "ts": 1787676743.6344147
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-19-f1-v1-a1.js",
+        "status": 200,
+        "content_type": "",
+        "bytes": 1624696,
+        "object": "obj-55655ee9b30fbf5bc3ed",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 13,
+        "ts": 1787676749.2310038
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-21-f1-v1-a1.css",
+        "status": 200,
+        "content_type": "",
+        "bytes": 2758779,
+        "object": "obj-2d8e89f75981f6420716",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 14,
+        "ts": 1787676755.122545
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-252-f1-v1-a1.html",
+        "status": 200,
+        "content_type": "",
+        "bytes": 316216,
+        "object": "obj-c1eb85a2bbc9a25e5369",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 15,
+        "ts": 1787676757.0048313
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-254-f1-v1-a1.js",
+        "status": 200,
+        "content_type": "",
+        "bytes": 180856,
+        "object": "obj-0669a6e657dd35b46ec4",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 16,
+        "ts": 1787676757.0916972
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-255-f1-v1-a1.css",
+        "status": 200,
+        "content_type": "",
+        "bytes": 380525,
+        "object": "obj-293115dab214b47c33bc",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 17,
+        "ts": 1787676757.1738987
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-256-f1-v1-a1.txt",
+        "status": 200,
+        "content_type": "",
+        "bytes": 460600,
+        "object": "obj-2b77804a80bf13c22090",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 18,
+        "ts": 1787676757.258688
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-257-f1-v1-a1.png",
+        "status": 200,
+        "content_type": "",
+        "bytes": 192888,
+        "object": "obj-ca1f65bb7014d5056df8",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 19,
+        "ts": 1787676757.4746606
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-258-f1-v1-a1.webp",
+        "status": 200,
+        "content_type": "",
+        "bytes": 457592,
+        "object": "obj-df815670c6b8089c9bd8",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 20,
+        "ts": 1787676757.5566354
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-260-f1-v1-a1.ico",
+        "status": 200,
+        "content_type": "",
+        "bytes": 222968,
+        "object": "obj-cf94960065d60d7f35f2",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 21,
+        "ts": 1787676757.6415813
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-261-f1-v1-a1.jpg",
+        "status": 200,
+        "content_type": "",
+        "bytes": 713272,
+        "object": "obj-ce756a67ffd4b538c56f",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 22,
+        "ts": 1787676757.7276025
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-265-f1-v1-a1.html",
+        "status": 200,
+        "content_type": "",
+        "bytes": 304184,
+        "object": "obj-0d6e94080ab19b7fcf53",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 23,
+        "ts": 1787676767.1407845
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-266-f1-v1-a1.js",
+        "status": 200,
+        "content_type": "",
+        "bytes": 328248,
+        "object": "obj-292f513ca325df562641",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 24,
+        "ts": 1787676771.7429852
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-267-f1-v1-a1.css",
+        "status": 200,
+        "content_type": "",
+        "bytes": 330765,
+        "object": "obj-a82773066ac9731455bc",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 25,
+        "ts": 1787676774.5242624
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-268-f1-v1-a1.txt",
+        "status": 200,
+        "content_type": "",
+        "bytes": 683192,
+        "object": "obj-3743fd60ce7f1b1f50bc",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 26,
+        "ts": 1787676776.621026
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-272-f1-v1-a1.png",
+        "status": 200,
+        "content_type": "",
+        "bytes": 571896,
+        "object": "obj-a53550a473e5b7430730",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 27,
+        "ts": 1787676787.074628
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-274-f1-v1-a1.webp",
+        "status": 200,
+        "content_type": "",
+        "bytes": 532792,
+        "object": "obj-8529bf9fbcd1074bd5d3",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 28,
+        "ts": 1787676793.1251452
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-275-f1-v1-a1.ico",
+        "status": 200,
+        "content_type": "",
+        "bytes": 364344,
+        "object": "obj-3d6fe558dd32d19a1450",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 29,
+        "ts": 1787676798.4220006
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-277-f1-v1-a1.jpg",
+        "status": 200,
+        "content_type": "",
+        "bytes": 830584,
+        "object": "obj-ccad9168ff9b51642836",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 30,
+        "ts": 1787676802.336126
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-280-f1-v1-a1.html",
+        "status": 200,
+        "content_type": "",
+        "bytes": 1119352,
+        "object": "obj-2fdceb39ac856c2f57d6",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 31,
+        "ts": 1787676811.0272665
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-281-f1-v1-a1.js",
+        "status": 200,
+        "content_type": "",
+        "bytes": 959928,
+        "object": "obj-4388174d2f5003068e0b",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 32,
+        "ts": 1787676814.7244246
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-282-f1-v1-a1.css",
+        "status": 200,
+        "content_type": "",
+        "bytes": 1060434,
+        "object": "obj-b7f1eb75183b0cb7f6eb",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 33,
+        "ts": 1787676818.0331209
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-283-f1-v1-a1.txt",
+        "status": 200,
+        "content_type": "",
+        "bytes": 611000,
+        "object": "obj-69f74e6951311cd9efb0",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 34,
+        "ts": 1787676821.127128
+      },
+      {
+        "url": "https://03nc1.livedns.my/anime/f899139df5e1059396431415e770c6dd/61b87186ab260d05003427e16ccf5657/seg-286-f1-v1-a1.png",
+        "status": 200,
+        "content_type": "",
+        "bytes": 343288,
+        "object": "obj-879f5e32ab488c4accc1",
+        "request_header_names": [
+          "accept",
+          "accept-encoding",
+          "accept-language",
+          "origin",
+          "priority",
+          "referer",
+          "sec-ch-ua",
+          "sec-ch-ua-mobile",
+          "sec-ch-ua-platform",
+          "sec-fetch-dest",
+          "sec-fetch-mode",
+          "sec-fetch-site",
+          "user-agent"
+        ],
+        "seq": 35,
+        "ts": 1787676831.6320782
+      }
+    ],
+    "redirects": {},
+    "total_bytes": 27749888,
+    "stopped": null,
+    "errors": [],
+    "objects_dir": "verification\\media-objects-manual-seek-session"
+  },
+  "media_capture_error": "AttributeError: 'NoneType' object has no attribute 'BrowserView'",
+  "capture_seq": 1,
+  "manual_closed": true
+}

@@ -1,0 +1,46 @@
+{
+  "installer": "F:\\Projects\\VRKA\\VRKA-2.0.0-build009-work\\VRKA-3.0\\installer_output\\VRKA-3.0.0-setup-Windows-x64.exe",
+  "pre": {
+    "install_dir_exists": false,
+    "uninstall_key": null,
+    "stale_processes": [],
+    "appdata_files": 900
+  },
+  "install_exit_code": 0,
+  "installed_exe_exists": true,
+  "installed_sha256": "641f020bf5e5d08a206947f3b74d9d52d85954e362921d1cacfbaa5379f01825",
+  "dist_sha256": "641f020bf5e5d08a206947f3b74d9d52d85954e362921d1cacfbaa5379f01825",
+  "byte_identical_with_dist": true,
+  "installed_file_version": "3.0.0.11",
+  "installed_diagnostics": {
+    "exit_code": 0,
+    "version": "3.0.0",
+    "build": "011",
+    "frozen": true
+  },
+  "smoke_window_found": true,
+  "smoke_exit_code": 0,
+  "uninstall_key_present_after_install": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{7C6E2F1A-4B3D-4E9A-9F2C-1A8D5E6B3C90}_is1",
+  "uninstaller_exists": true,
+  "uninstall_exit_code": 0,
+  "post": {
+    "install_dir_exists": false,
+    "uninstall_key": null,
+    "stale_processes": [],
+    "appdata_files": 900,
+    "start_menu_shortcut_exists": false,
+    "desktop_shortcut_exists": false
+  },
+  "checks": {
+    "install_succeeded": true,
+    "byte_identical_with_dist": true,
+    "file_version_3_0_0_11": true,
+    "diagnostics_build_011": true,
+    "smoke_clean_close": true,
+    "uninstall_succeeded": true,
+    "no_install_dir_residue": true,
+    "no_registry_residue": true,
+    "no_stale_processes": true
+  },
+  "all_passed": true
+}

@@ -1,0 +1,187 @@
+{
+  "brand": "VRKA",
+  "version": "2.0.0",
+  "build": "008",
+  "accent": "#8140DC",
+  "canonical_master": "vrka-build010-canonical-source.png",
+  "canonical_source_sha256": "862AD0437F2A080C23D3F91A29865E76A3D85A3FACF2C3324835FB7159553C20",
+  "canonical_source_size": [
+    1254,
+    1254
+  ],
+  "derivation": "external black background removed via 8-connected border flood fill; internal black geometry preserved opaque; antialiased silhouette edge converted to partial alpha; uniform scale and centering into the production 1024 canvas only",
+  "two_colour": true,
+  "flat_color": false,
+  "alpha_symmetry_fraction": 0.004181,
+  "extraction": {
+    "background_threshold": 32,
+    "external_background_pixels": 1049571,
+    "internal_black_pixels": 135306,
+    "purple_max_channel": 213
+  },
+  "normalization": {
+    "source_bbox": [
+      196,
+      158,
+      1063,
+      1148
+    ],
+    "scale": 0.888889,
+    "offset": [
+      126,
+      72
+    ]
+  },
+  "tiny_variant": null,
+  "png_sizes": [
+    16,
+    20,
+    24,
+    32,
+    40,
+    48,
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "ico_sizes": [
+    16,
+    20,
+    24,
+    32,
+    40,
+    48,
+    64,
+    128,
+    256
+  ],
+  "icns_sizes": [
+    32,
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "icns_logical_entries": [
+    [
+      512,
+      512,
+      2
+    ],
+    [
+      512,
+      512,
+      1
+    ],
+    [
+      256,
+      256,
+      2
+    ],
+    [
+      256,
+      256,
+      1
+    ],
+    [
+      128,
+      128,
+      2
+    ],
+    [
+      128,
+      128,
+      1
+    ],
+    [
+      32,
+      32,
+      2
+    ],
+    [
+      16,
+      16,
+      2
+    ]
+  ],
+  "contact_sheet": "vrka-icon-contact-sheet.png",
+  "placements": {
+    "sidebar": 40,
+    "queue_empty_state": 32,
+    "history_empty_state": 32,
+    "window_taskbar_alt_tab": 256,
+    "windows_executable_installer_shortcuts": "vrka.ico",
+    "macos_application": "vrka.icns"
+  },
+  "png_alpha_bounding_boxes": {
+    "16": [
+      2,
+      1,
+      14,
+      15
+    ],
+    "20": [
+      2,
+      1,
+      18,
+      19
+    ],
+    "24": [
+      3,
+      1,
+      21,
+      23
+    ],
+    "32": [
+      4,
+      2,
+      28,
+      30
+    ],
+    "40": [
+      5,
+      3,
+      35,
+      37
+    ],
+    "48": [
+      6,
+      3,
+      42,
+      45
+    ],
+    "64": [
+      8,
+      4,
+      56,
+      60
+    ],
+    "128": [
+      15,
+      9,
+      113,
+      119
+    ],
+    "256": [
+      31,
+      18,
+      225,
+      238
+    ],
+    "512": [
+      63,
+      36,
+      449,
+      476
+    ],
+    "1024": [
+      126,
+      72,
+      897,
+      952
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+name: Bug report
+description: Report a reproducible VRKA defect
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Remove cookies, tokens, signed URLs, private media, and personal paths from all logs.
+        Security vulnerabilities must be reported privately through the Security tab.
+  - type: input
+    id: version
+    attributes:
+      label: VRKA version
+      placeholder: "2.0.0 build008"
+    validations:
+      required: true
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - Installer
+        - Portable ZIP
+        - Running from source
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: "Windows 11 24H2 x64"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open...
+        2. Select...
+        3. Start...
+    validations:
+      required: true
+  - type: textarea
+    id: options
+    attributes:
+      label: Relevant task options
+      description: Mode, quality, format, playlist, subtitles, trim, cookies/browser verification. Do not paste secrets.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized Activity Stream
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I updated yt-dlp and restarted VRKA.
+          required: true
+        - label: I confirmed the source is not DRM-protected.
+          required: true
+        - label: I removed cookies, tokens, signed URLs, and personal paths.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

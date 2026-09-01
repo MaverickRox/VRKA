@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security Vulnerability Reporting
+    url: https://github.com/MaverickRox/VRKA/security/advisories/new
+    about: Privately report a security issue or vulnerability.
+  - name: Support and Questions
+    url: https://github.com/MaverickRox/VRKA/blob/main/SUPPORT.md
+    about: Read the troubleshooting documentation and support guidelines.
