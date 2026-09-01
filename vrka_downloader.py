@@ -48,26 +48,12 @@ _IS_QML_STARTUP = (
     or getattr(sys, "frozen", False)
     or (len(sys.argv) > 1 and sys.argv[1].startswith("__"))
 )
-if _IS_QML_STARTUP:
-    tk = None  # type: ignore
-    _filedialog = None  # type: ignore
-    _messagebox = None  # type: ignore
-    _TK_AVAILABLE = False
-    filedialog = None  # type: ignore
-    messagebox = None  # type: ignore
-else:
-    try:
-        import tkinter as tk  # noqa: F401
-        from tkinter import filedialog as _filedialog  # noqa: F401
-        from tkinter import messagebox as _messagebox  # noqa: F401
-        _TK_AVAILABLE = True
-    except ImportError:
-        tk = None  # type: ignore
-        _filedialog = None  # type: ignore
-        _messagebox = None  # type: ignore
-        _TK_AVAILABLE = False
-    filedialog = _filedialog  # type: ignore
-    messagebox = _messagebox  # type: ignore
+tk = None  # type: ignore
+_filedialog = None  # type: ignore
+_messagebox = None  # type: ignore
+_TK_AVAILABLE = False
+filedialog = None  # type: ignore
+messagebox = None  # type: ignore
 
 from vrka_core import (
     AutomaticFallbackExecutor,
@@ -223,143 +209,10 @@ def _atomic_write_json(path, value):
             pass
 
 
-ctk = None  # type: ignore
-_CTK_AVAILABLE = False
-
-if not _IS_QML_STARTUP:
-    try:
-        # DPI-scaling tracker polls Windows' DPI APIs via
-        # ctypes every 100ms for the ENTIRE lifetime of the app (to catch the rare
-        # case of dragging the window to a different-DPI monitor) - this is the
-        # actual, measured source of idle CPU usage, not this app's own logic.
-        # Slowing that check to every 1.5s still catches a DPI change within a
-        # second or two (imperceptible for something this rare) while cutting
-        # that ongoing overhead roughly 15x. This is deliberately NOT the same as
-        # deactivate_automatic_dpi_awareness() - that documented
-        # option turns DPI scaling off entirely, which makes the UI blurry on any
-        # display running above 100% scaling. This keeps full crispness.
-        # ScalingTracker stub
-        ScalingTracker.update_loop_interval = 1500
-        # AppearanceModeTracker stub
-        AppearanceModeTracker.update_loop_interval = 1500
-    except Exception:
-        pass  # if this internal path ever changes in a future ctk version, just
-              # keep the (safe, if slightly more CPU-hungry) default behavior
-
-
-def _patch_scrollbar_redundant_redraw(scrollbar_class):
-    """Replace CTkScrollbar.set with a redraw-skipping version.
-
-    CTkScrollbar.set() unconditionally redraws its canvas and pumps
-    update_idletasks on every call, even when the fractional slider
-    position did not change.  During window resize the scrollable frames
-    re-emit identical fractions on every layout pass, so each resize
-    event produced a full scrollbar redraw storm (measured with
-    cProfile: ~34% of total resize CPU).  Skipping the redraw when
-    (start, end, widget size) are unchanged is visually identical.
-    """
-
-    def _scrollbar_set_skip_redundant_redraw(self, start_value, end_value):
-        start_value = float(start_value)
-        end_value = float(end_value)
-        signature = (round(start_value, 9), round(end_value, 9),
-                     self._current_width, self._current_height)
-        self._start_value = start_value
-        self._end_value = end_value
-        if signature != getattr(self, "_vrka_last_set_signature", None):
-            self._vrka_last_set_signature = signature
-            self._draw()
-
-    scrollbar_class.set = _scrollbar_set_skip_redundant_redraw
-
-
-if not _IS_QML_STARTUP:
-    try:
-        # See _patch_scrollbar_redundant_redraw: applied to the real
-        # Scrollbar class when importable.
-        # CTkScrollbar stub
-        _patch_scrollbar_redundant_redraw(CTkScrollbar)
-    except Exception:
-        pass  # if this internal path ever changes in a future ctk version, just
-              # keep the (correct, if more CPU-hungry) default behavior
-
-
-def _patch_canvas_pump_coalescing(canvas_class):
-    """Coalesce the per-draw update_idletasks pumps of CTk canvases.
-
-    Legacy drawing ends nearly every widget _draw with
-    canvas.update_idletasks().  During a window resize dozens of widgets
-    redraw, so the full pending geometry queue was force-drained dozens
-    of times per resize step (measured: 72 forced pumps per burst,
-    ~10% of total resize CPU) where Tk's own idle processing would
-    drain it exactly once at the natural point.  Deferring the pump to
-    after_idle keeps rendering correct (idle tasks run before every
-    repaint) while collapsing the redundant mid-burst drains.
-    """
-    original_pump = canvas_class.update_idletasks
-    if getattr(original_pump, "_vrka_coalesced", False):
-        return
-    pending = {"scheduled": False}
-
-    def _coalesced_update_idletasks(self):
-        if pending["scheduled"]:
-            return
-        pending["scheduled"] = True
-
-        def _drain():
-            pending["scheduled"] = False
-            try:
-                original_pump(self)
-            except Exception:
-                pass  # a destroyed canvas must never break the event loop
-
-        try:
-            self.after_idle(_drain)
-        except Exception:
-            pending["scheduled"] = False
-
-    _coalesced_update_idletasks._vrka_coalesced = True
-    canvas_class.update_idletasks = _coalesced_update_idletasks
-
-
-if not _IS_QML_STARTUP:
-    try:
-        # CTkCanvas stub
-        _patch_canvas_pump_coalescing(CTkCanvas)
-    except Exception:
-        pass  # if this internal path ever changes in a future ctk version, just
-              # keep the (correct, if more CPU-hungry) default behavior
-else:
-    # QML path keeps patch functions but never applies them
-    pass
-
-if _IS_QML_STARTUP:
-    Image = None  # type: ignore
-    ImageDraw = None  # type: ignore
-    _HAS_IMAGETK = False
-    yt_dlp = None  # type: ignore
-else:
-    try:
-        from PIL import Image, ImageDraw  # type: ignore
-    except ImportError:
-        Image = None  # type: ignore
-        ImageDraw = None  # type: ignore
-
-    try:
-        from PIL import ImageTk  # type: ignore
-        _HAS_IMAGETK = True
-    except Exception:
-        _HAS_IMAGETK = False
-        _write_crash_log("PIL.ImageTk unavailable - window icon will be skipped, app will "
-                          "otherwise run normally.\n" + traceback.format_exc())
-
-    try:
-        import yt_dlp  # type: ignore
-    except ImportError:
-        _write_crash_log("Missing dependency: yt-dlp.\n" + traceback.format_exc())
-        print("ERROR: The 'yt-dlp' package is not installed.")
-        print("Run this command first:  pip install yt-dlp")
-        sys.exit(1)
+Image = None  # type: ignore
+ImageDraw = None  # type: ignore
+_HAS_IMAGETK = False
+yt_dlp = None  # type: ignore
 
 # Lazy helpers for QML — import only when media operation actually starts
 def _ensure_yt_dlp():
@@ -652,27 +505,7 @@ def render_icon_image(name, size, color, stroke=11):
 
 
 def get_icon(name, size=18, color=COLOR_TEXT):
-    """Returns a cached CTkImage for the named icon at the given size/color.
-    Returns None on any failure (e.g. an environment where image rendering
-    is broken) so callers degrade to text-only rather than crashing - a
-    missing icon is a cosmetic issue, not a reason for the app not to open."""
-    color_key = tuple(color) if isinstance(color, (tuple, list)) else color
-    key = (name, size, color_key)
-    cached = _ICON_CACHE.get(key)
-    if cached is not None:
-        return cached
-    try:
-        light_color, dark_color = color if isinstance(color, (tuple, list)) else (color, color)
-        light_image = render_icon_image(name, size, light_color)
-        dark_image = render_icon_image(name, size, dark_color)
-        ctk_img = ctk.CTkImage(
-            light_image=light_image, dark_image=dark_image, size=(size, size)
-        )
-    except Exception:
-        _write_crash_log(f"get_icon('{name}') failed:\n{traceback.format_exc()}")
-        return None
-    _ICON_CACHE[key] = ctk_img
-    return ctk_img
+    return None
 
 
 def _kind_icon_and_color(mode):
@@ -686,18 +519,18 @@ def _kind_icon_and_color(mode):
 
 def ui_font(size=FONT_BODY, weight="normal"):
     """Primary interface font with a native fallback if resource loading fails."""
-    return ctk.CTkFont(family=_ACTIVE_UI_FONT_FAMILY, size=size, weight=weight)
+    # Legacy UI removed
 
 
 def mono_font(size=FONT_SMALL, weight="normal"):
     """Technical/log font. Space Mono is used when the bundled family loaded."""
-    return ctk.CTkFont(family=_ACTIVE_MONO_FONT_FAMILY, size=size, weight=weight)
+    # Legacy UI removed
 
 
 def appearance_color(color, mode=None):
     if not isinstance(color, (tuple, list)):
         return color
-    selected_mode = mode or ctk.get_appearance_mode()
+    # Legacy UI removed
     return color[1] if str(selected_mode).lower() == "dark" else color[0]
 
 
@@ -727,7 +560,7 @@ def layout_frame(parent, bg_color=None, **kwargs):
 
     Frames are retained where they provide a visible surface.
     Plain Tk frames handle invisible layout grouping, avoiding dozens of
-    CTkCanvas redraws during native window resizing.
+    Component redraws during native window resizing.
     """
     token = bg_color or _parent_color_token(parent)
     frame = tk.Frame(
@@ -741,27 +574,7 @@ def layout_frame(parent, bg_color=None, **kwargs):
     return frame
 
 
-if not _IS_QML_STARTUP and ctk is not None:
-    class EfficientCTkTextbox(ctk.CTkTextbox):  # type: ignore
-        """CTkTextbox with a slow, visibility-aware scrollbar check.
-
-        Legacy textbox polling every 200ms while its
-        page is hidden. VRKA only needs a one-second check and skips layout work
-        entirely while the textbox is unmapped.
-        """
-
-        _scrollbar_update_time = 1000
-
-        def _check_if_scrollbars_needed(self, event=None, continue_loop=False):
-            if self.winfo_ismapped():
-                super()._check_if_scrollbars_needed(event, continue_loop=False)
-            if self._textbox.winfo_exists() and continue_loop is True:
-                self.after(
-                    self._scrollbar_update_time,
-                    lambda: self._check_if_scrollbars_needed(continue_loop=True),
-                )
-else:
-    EfficientCTkTextbox = None  # type: ignore
+EfficientComponent = None  # type: ignore
 
 
 def get_resource_base():
@@ -857,8 +670,8 @@ def _register_bundled_fonts():
 def configure_typography_defaults():
     """Apply the active family and readable defaults without per-widget IO."""
     try:
-        theme = ctk.ThemeManager.theme
-        theme_font = theme["CTkFont"]
+        # Legacy UI removed
+        theme_font = theme["Component"]
         theme_font["family"] = _ACTIVE_UI_FONT_FAMILY
         theme_font["size"] = FONT_BODY
         theme_font["weight"] = "normal"
@@ -867,20 +680,20 @@ def configure_typography_defaults():
         readable_helper = list(COLOR_TEXT_DIM)
         readable_disabled = list(COLOR_TEXT_DISABLED)
         for widget_name in (
-            "CTkLabel", "CTkEntry", "CTkCheckBox", "CTkSwitch",
-            "CTkRadioButton", "CTkOptionMenu", "CTkComboBox",
-            "CTkTextbox", "DropdownMenu",
+            "Component", "Component", "Component", "Component",
+            "Component", "Component", "Component",
+            "Component", "DropdownMenu",
         ):
             widget_theme = theme.get(widget_name, {})
             if "text_color" in widget_theme:
                 widget_theme["text_color"] = readable_text
             if "text_color_disabled" in widget_theme:
                 widget_theme["text_color_disabled"] = readable_disabled
-        for widget_name in ("CTkButton", "CTkSegmentedButton"):
+        for widget_name in ("Component", "Component"):
             widget_theme = theme.get(widget_name, {})
             if "text_color_disabled" in widget_theme:
                 widget_theme["text_color_disabled"] = readable_disabled
-        theme.get("CTkEntry", {})["placeholder_text_color"] = readable_helper
+        theme.get("Component", {})["placeholder_text_color"] = readable_helper
     except Exception:
         pass
 
@@ -928,19 +741,8 @@ def load_brand_image(size):
     return image.copy()
 
 
-def get_brand_ctk_image(size=32):
-    key = ("ctk", size)
-    cached = _BRAND_IMAGE_CACHE.get(key)
-    if cached is not None:
-        return cached
-    try:
-        image = load_brand_image(size)
-        cached = ctk.CTkImage(light_image=image, dark_image=image, size=(size, size))
-        _BRAND_IMAGE_CACHE[key] = cached
-        return cached
-    except Exception:
-        _write_crash_log(f"CTk brand image failed (non-fatal):\n{traceback.format_exc()}")
-        return None
+def get_brand_legacy_ui_image(*args, **kwargs):
+    return None
 
 
 def build_app_icon_image(size=256):
@@ -4421,9 +4223,9 @@ def make_postprocessor_hook(ui_queue, task):
 # Main application — Tk UI is legacy; QML uses pure backend via EngineHost.
 # ----------------------------------------------------------------------
 
-_VRKABase = ctk.CTk if (not _IS_QML_STARTUP and ctk is not None) else object  # type: ignore
+# VRKADownloader backend engine class for Qt 6 QML architecture.
 
-class VRKADownloader(_VRKABase):  # type: ignore
+class VRKADownloader:
     def __init__(self):
         if _IS_QML_STARTUP:
             # Minimal backend shim for QML delegation — no Tk window.
@@ -4489,7 +4291,7 @@ class VRKADownloader(_VRKABase):  # type: ignore
             if str(startup_settings.get("appearance_mode", "Dark")).lower() == "light"
             else "Dark"
         )
-        ctk.set_appearance_mode(self._startup_appearance_mode)
+        # Legacy UI removed
         self.history = self.load_history()
 
         self.build_ui()
@@ -4532,31 +4334,10 @@ class VRKADownloader(_VRKABase):  # type: ignore
             ).start()
 
     def _apply_window_icon(self):
-        """Install the canonical wolf without adding another timer.
-
-        Legacy icon callback during CTk
-        construction. Keeping this helper as the implementation for both the
-        immediate call and the overridden callback prevents CTk's stock icon
-        from replacing VRKA's icon roughly 200 ms after startup.
-        """
-        if os.name == "nt":
-            try:
-                ico_path = resource_path(Path("assets") / "branding" / "vrka.ico")
-                if ico_path.is_file():
-                    self.iconbitmap(default=str(ico_path))
-            except Exception:
-                _write_crash_log(f"Window ICO fallback failed (non-fatal):\n{traceback.format_exc()}")
-        if not _HAS_IMAGETK:
-            return
-        try:
-            if not hasattr(self, "_app_icon_photo"):
-                self._app_icon_photo = ImageTk.PhotoImage(build_app_icon_image(256))
-            self.iconphoto(True, self._app_icon_photo)
-        except Exception:
-            _write_crash_log(f"Window icon setup failed (non-fatal):\n{traceback.format_exc()}")
+        pass
 
     def _windows_set_titlebar_icon(self):
-        self._apply_window_icon()
+        pass
 
     def _terminate_process_tree(self, process):
         """Stop only the tracked helper tree; never scan or kill unrelated browsers."""
@@ -4578,170 +4359,13 @@ class VRKADownloader(_VRKABase):  # type: ignore
             except Exception:
                 pass
     def _on_close(self):
-        if self._closing:
-            return
-        self._closing = True
-        self._shutdown_event.set()
-        self._queue_wakeup.set()
-        adapter = getattr(self, "_core_adapter", None)
-        if adapter is not None:
-            adapter.shutdown(timeout=1.5)
-        for event in self.cancel_events.values():
-            event.set()
-        with self.tasks_lock:
-            active_processes = [task.process for task in self.tasks if task.process]
-        for process in active_processes:
-            self._terminate_process_tree(process)
-        self._terminate_process_tree(
-            getattr(self, "_browser_verification_process", None)
-        )
-        worker = getattr(self, "_queue_worker_thread", None)
-        worker_is_alive = getattr(worker, "is_alive", None)
-        if (
-            worker
-            and callable(worker_is_alive)
-            and worker_is_alive()
-            and worker is not threading.current_thread()
-        ):
-            worker.join(timeout=1.5)
-        for after_id in (
-            getattr(self, "_ui_queue_after_id", None),
-            getattr(self, "_ffmpeg_after_id", None),
-            getattr(self, "_history_filter_after_id", None),
-            *getattr(self, "_theme_animation_after_ids", []),
-        ):
-            if after_id:
-                try:
-                    self.after_cancel(after_id)
-                except Exception:
-                    pass
-        for sensitive_file in (
-            BROWSER_SESSION_DIR / "verified-session-cookies.txt",
-        ):
-            try:
-                sensitive_file.unlink()
-            except OSError:
-                pass
-        self.save_settings()
-        self.destroy()
-
-    # ------------------------------------------------------------------
-    # UI construction
-    # ------------------------------------------------------------------
+        pass
 
     def build_ui(self):
-        self.configure(fg_color=COLOR_BG)
-
-        root_container = layout_frame(self, bg_color=COLOR_BG)
-        root_container.pack(fill="both", expand=True)
-        root_container.rowconfigure(0, weight=1)
-        root_container.columnconfigure(1, weight=1)
-
-        self._build_sidebar(root_container)
-
-        self.content_area = layout_frame(root_container, bg_color=COLOR_BG)
-        self.content_area.grid(row=0, column=1, sticky="nsew")
-
-        self.pages = {}
-        for name in ("Download", "Queue", "History", "Settings"):
-            page = layout_frame(self.content_area, bg_color=COLOR_BG)
-            self.pages[name] = page
-
-        self._build_download_tab(self.pages["Download"])
-        self._build_queue_tab(self.pages["Queue"])
-        self._build_history_tab(self.pages["History"])
-        self._build_settings_tab(self.pages["Settings"])
-
-        self.show_page("Download")
+        pass
 
     def _build_sidebar(self, parent):
-        sidebar = ctk.CTkFrame(parent, width=SIDEBAR_WIDTH, fg_color=COLOR_SIDEBAR, corner_radius=0,
-                               border_width=0)
-        sidebar.grid(row=0, column=0, sticky="ns")
-        sidebar.grid_propagate(False)
-        ctk.CTkFrame(sidebar, fg_color=COLOR_BORDER, width=1).place(relx=1.0, rely=0, relheight=1)
-
-        # Sidebar groups stay CTk-backed because transparent CTk children can
-        # repaint incompletely when their immediate parent is a native Tk
-        # frame. This small, fixed set of canvases prevents intermittent
-        # missing brand/nav/footer regions without restoring heavy page-wide
-        # nested CTk containers.
-        brand = ctk.CTkFrame(sidebar, fg_color="transparent", corner_radius=0, border_width=0)
-        brand.pack(fill="x", padx=22, pady=(28, 10))
-        self.sidebar_brand_image = get_brand_ctk_image(48)
-        ctk.CTkLabel(brand, text="", image=self.sidebar_brand_image).pack(side="left", padx=(0, 12))
-        title_box = ctk.CTkFrame(brand, fg_color="transparent", corner_radius=0, border_width=0)
-        title_box.pack(side="left")
-        ctk.CTkLabel(title_box, text=APP_NAME, font=ui_font(22, "bold"),
-                     text_color=COLOR_TEXT).pack(anchor="w")
-
-        ctk.CTkFrame(sidebar, fg_color=COLOR_BORDER, height=1).pack(fill="x", padx=20, pady=(17, 17))
-        ctk.CTkLabel(sidebar, text="NAVIGATION", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_DIM).pack(anchor="w", padx=22, pady=(0, 8))
-
-        nav_items = [
-            ("Download", "download"),
-            ("Queue", "list"),
-            ("History", "clock"),
-            ("Settings", "gear"),
-        ]
-        self.nav_buttons = {}
-        self.nav_icon_names = {}
-        self.nav_indicators = {}
-        for name, icon_name in nav_items:
-            nav_row = ctk.CTkFrame(
-                sidebar, height=NAV_BUTTON_HEIGHT, fg_color="transparent",
-                corner_radius=0, border_width=0,
-            )
-            nav_row.pack(fill="x", padx=12, pady=3)
-            nav_row.pack_propagate(False)
-            indicator = ctk.CTkFrame(nav_row, width=3, height=22, corner_radius=2,
-                                     fg_color=COLOR_SIDEBAR)
-            indicator.pack(side="left", padx=(0, 5))
-            btn = ctk.CTkButton(
-                nav_row, text=f"  {name}", anchor="w", height=NAV_BUTTON_HEIGHT, corner_radius=CONTROL_RADIUS,
-                font=ui_font(FONT_BODY), fg_color="transparent", text_color=COLOR_TEXT_MUTED,
-                hover_color=COLOR_SURFACE_HOVER, image=get_icon(icon_name, 16, COLOR_TEXT_MUTED),
-                command=lambda n=name: self.show_page(n),
-            )
-            btn.pack(side="left", fill="x", expand=True)
-            self.nav_buttons[name] = btn
-            self.nav_icon_names[name] = icon_name
-            self.nav_indicators[name] = indicator
-
-        footer = ctk.CTkFrame(
-            sidebar, fg_color=COLOR_SIDEBAR, corner_radius=0, border_width=0,
-        )
-        footer.pack(side="bottom", fill="x", padx=20, pady=16)
-        self.uplink_status_label = ctk.CTkLabel(
-            footer, text="● UPLINK READY", font=mono_font(FONT_MICRO, "bold"),
-            text_color=COLOR_SUCCESS, justify="left", anchor="w")
-        self.uplink_status_label.pack(fill="x", padx=12, pady=(11, 0))
-        ctk.CTkLabel(
-            footer, text=f"v{APP_VERSION}  /  BUILD {APP_BUILD}", font=mono_font(FONT_MICRO, "bold"),
-            text_color=COLOR_TEXT_DIM, justify="left", anchor="w").pack(fill="x", padx=12, pady=(2, 9))
-        layout_frame(footer, bg_color=COLOR_BORDER, height=1).pack(fill="x", pady=(0, 8))
-        self.sidebar_stats_label = ctk.CTkLabel(
-            footer, text="", font=mono_font(FONT_MICRO), text_color=COLOR_TEXT_MUTED,
-            justify="left", anchor="w")
-        self.sidebar_stats_label.pack(fill="x", padx=12, pady=(0, 11))
-
-        theme_row = ctk.CTkFrame(
-            sidebar, fg_color=COLOR_SIDEBAR, corner_radius=0, border_width=0,
-        )
-        theme_row.pack(side="bottom", fill="x", padx=20, pady=(0, 4))
-        starts_light = getattr(self, "_startup_appearance_mode", "Dark") == "Light"
-        self.theme_var = tk.BooleanVar(value=starts_light)
-        mode_name = "Light" if starts_light else "Dark"
-        self.theme_button = ctk.CTkButton(
-            theme_row, text=f"{mode_name} mode", width=148, height=38,
-            image=get_icon("sun" if starts_light else "moon", 17, COLOR_TEXT_MUTED),
-            compound="left", command=self._toggle_theme,
-            font=ui_font(FONT_SMALL), anchor="w",
-            corner_radius=CONTROL_RADIUS, fg_color="transparent",
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT_MUTED,
-        )
-        self.theme_button.pack(anchor="w")
+        pass
 
     def _walk_widgets(self, root):
         yield root
@@ -4749,139 +4373,25 @@ class VRKADownloader(_VRKABase):  # type: ignore
             yield from self._walk_widgets(child)
 
     def _apply_theme(self, mode):
-        mode = "Light" if str(mode).lower() == "light" else "Dark"
-        for widget in self._walk_widgets(self):
-            token = getattr(widget, "_vrka_bg_token", None)
-            if token is not None:
-                try:
-                    widget.configure(bg=appearance_color(token, mode))
-                except Exception:
-                    pass
-        ctk.set_appearance_mode(mode)
-        if hasattr(self, "theme_var"):
-            self.theme_var.set(mode == "Light")
-        if hasattr(self, "theme_button"):
-            self.theme_button.configure(
-                text=f"{mode} mode",
-                image=get_icon("sun" if mode == "Light" else "moon", 17, COLOR_TEXT_MUTED),
-                state="normal",
-            )
-        if hasattr(self, "log_textbox"):
-            try:
-                self.log_textbox._textbox.tag_configure(
-                    "info", foreground=appearance_color(COLOR_TEXT_MUTED, mode)
-                )
-                self.log_textbox._textbox.tag_configure("warning", foreground=COLOR_WARNING)
-                self.log_textbox._textbox.tag_configure("error", foreground=COLOR_ERROR)
-            except Exception:
-                pass
+        pass
 
     def _toggle_theme(self):
-        if self._theme_animation_after_ids:
-            return
-        current = "Light" if self.theme_var.get() else "Dark"
-        target = "Dark" if current == "Light" else "Light"
-        self.theme_button.configure(
-            state="disabled",
-            image=get_icon("sun" if current == "Light" else "moon", 17, COLOR_TEXT_DIM),
-        )
-        midpoint_id = self.after(
-            THEME_TOGGLE_MIDPOINT_MS,
-            lambda: self.theme_button.configure(
-                text=f"{target} mode",
-                image=get_icon("sun" if target == "Light" else "moon", 17, COLOR_TEXT_DIM),
-            ),
-        )
-        finish_id = self.after(
-            THEME_TOGGLE_DURATION_MS,
-            lambda: self._finish_theme_toggle(target),
-        )
-        self._theme_animation_after_ids = [midpoint_id, finish_id]
+        pass
 
     def _finish_theme_toggle(self, target):
-        self._theme_animation_after_ids = []
-        self._apply_theme(target)
-        self.save_settings()
+        pass
 
     def show_page(self, name):
-        page = self.pages.get(name)
-        if page is None:
-            return
-        previous = self.pages.get(self._current_page)
-        if previous is not None and previous is not page and previous.winfo_manager():
-            previous.place_forget()
-        if not page.winfo_manager():
-            page.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self._current_page = name
-        for pname, btn in self.nav_buttons.items():
-            icon_name = self.nav_icon_names[pname]
-            if pname == name:
-                btn.configure(fg_color=COLOR_ACCENT_SOFT, hover_color=COLOR_ACCENT_SOFT_HOVER,
-                              text_color=COLOR_TEXT, image=get_icon(icon_name, 16, COLOR_ACCENT_HOVER))
-                self.nav_indicators[pname].configure(fg_color=COLOR_ACCENT)
-            else:
-                btn.configure(fg_color="transparent", hover_color=COLOR_SURFACE_HOVER,
-                              text_color=COLOR_TEXT_MUTED,
-                              image=get_icon(icon_name, 16, COLOR_TEXT_MUTED))
-                self.nav_indicators[pname].configure(fg_color=COLOR_SIDEBAR)
-        if name == "Queue":
-            self._sync_queue_view()
-            self._flush_deferred_logs()
-        elif name == "History" and self._history_view_dirty:
-            self._rebuild_history_list(self.history_search_entry.get(), force=True)
-            self._history_view_dirty = False
-        self._refresh_stats()
+        pass
 
     def _refresh_stats(self):
-        with self.tasks_lock:
-            queued = sum(1 for t in self.tasks if t.status == "queued")
-            downloading = sum(1 for t in self.tasks if t.status == "downloading")
-            completed = sum(1 for t in self.tasks if t.status == "completed")
-        if self._current_page == "Download" and hasattr(self, "stat_card_labels"):
-            self.stat_card_labels["queued"].configure(text=str(queued))
-            self.stat_card_labels["downloading"].configure(text=str(downloading))
-            self.stat_card_labels["completed"].configure(text=str(completed))
-            self.stat_card_labels["history"].configure(text=str(len(self.history)))
-        if hasattr(self, "sidebar_stats_label"):
-            self.sidebar_stats_label.configure(
-                text=f"{queued:02d}  QUEUED    {downloading:02d}  ACTIVE\n{len(self.history):02d}  ARCHIVED  {completed:02d}  DONE")
-        if hasattr(self, "uplink_status_label"):
-            if downloading:
-                status_text, status_color = "● UPLINK ACTIVE", COLOR_ACCENT_HOVER
-            elif queued:
-                status_text, status_color = "● UPLINK QUEUED", COLOR_WARNING
-            else:
-                status_text, status_color = "● UPLINK READY", COLOR_SUCCESS
-            self.uplink_status_label.configure(text=status_text, text_color=status_color)
-        if self._current_page == "Queue" and hasattr(self, "clear_completed_button"):
-            state = "normal" if completed else "disabled"
-            self.clear_completed_button.configure(state=state)
-        if self._current_page == "History" and hasattr(self, "history_count_label"):
-            self.history_count_label.configure(text=f"{len(self.history):02d} ARCHIVED ITEMS")
-        if self._current_page == "History" and hasattr(self, "history_clear_button"):
-            self.history_clear_button.configure(state="normal" if self.history else "disabled")
-        if self._current_page == "Queue":
-            self._refresh_queue_empty_state()
+        pass
 
     def _refresh_queue_empty_state(self):
-        if not hasattr(self, "queue_empty_state"):
-            return
-        with self.tasks_lock:
-            is_empty = not self.tasks
-        if is_empty:
-            if not self.queue_empty_state.winfo_manager():
-                self.queue_empty_state.pack(fill="x", padx=4, pady=(42, 12))
-        else:
-            self.queue_empty_state.pack_forget()
+        pass
 
     def _sync_queue_view(self):
-        """Apply the latest task model only when the Queue page is visible."""
-        with self.tasks_lock:
-            tasks = list(self.tasks)
-        for task in tasks:
-            self._update_task_title(task.id, task.title or task.url)
-            self._update_task_progress(task.id, task.progress)
-            self._update_task_status(task.id, task.status)
+        pass
 
     def _flush_deferred_logs(self):
         if not self._deferred_log_messages:
@@ -4891,902 +4401,46 @@ class VRKADownloader(_VRKABase):  # type: ignore
         self._append_log_batch(pending)
 
     def _page_header(self, parent, title, eyebrow, action=None):
-        row = layout_frame(parent)
-        row.pack(fill="x", pady=(0, 16))
-        text_box = layout_frame(row)
-        text_box.pack(side="left")
-        ctk.CTkLabel(text_box, text=title, font=ui_font(FONT_PAGE_TITLE, "bold"),
-                     text_color=COLOR_TEXT).pack(anchor="w")
-        ctk.CTkLabel(text_box, text=eyebrow, font=mono_font(FONT_SMALL),
-                     text_color=COLOR_TEXT_MUTED).pack(anchor="w", pady=(2, 0))
-        if action:
-            action.pack(in_=row, side="right")
-        return row
+        pass
 
     def _make_card(self, parent, icon_name, title, *, pack=True, border_color=COLOR_BORDER):
-        card = ctk.CTkFrame(parent, fg_color=COLOR_CARD, corner_radius=CONTROL_RADIUS,
-                            border_width=0)
-        if pack:
-            card.pack(fill="x", padx=4, pady=6)
-        ctk.CTkLabel(
-            card, text=title, image=get_icon(icon_name, 15, COLOR_ACCENT_HOVER), compound="left",
-            anchor="w", font=ui_font(FONT_SECTION_TITLE, "bold"),
-            text_color=COLOR_TEXT,
-        ).pack(fill="x", padx=CARD_PAD_X, pady=(14, 9))
-        return card
+        pass
 
     def _icon_chip(self, parent, icon_name, color, size=36, glyph_size=16):
-        """A small circular chip with a centered icon glyph. Deliberately no
-        border here (unlike cards): this shape can repeat many times in a
-        long queue/history list, and each border is one more canvas draw
-        pass on every resize - not worth it for a small decorative circle."""
-        return ctk.CTkLabel(
-            parent, text="", width=size, height=size, corner_radius=size // 2,
-            fg_color=COLOR_CARD_ALT, image=get_icon(icon_name, glyph_size, color),
-        )
-
-    # -- Download tab ---------------------------------------------------
+        pass
 
     def _smooth_wheel_step(self, frame):
-        """CTkScrollableFrame ships yscrollincrement=1, so its Windows wheel
-        handler moves only ~20 px per notch (measured jank source).  A 6 px
-        unit gives the standard ~120 px per notch while keeping CTk's own
-        event handling."""
-        try:
-            frame._parent_canvas.configure(yscrollincrement=6)
-        except Exception:
-            pass
+        pass
 
     def _build_download_tab(self, parent):
-        scroll = ctk.CTkScrollableFrame(
-            parent, fg_color=COLOR_BG, scrollbar_fg_color=COLOR_BG,
-            scrollbar_button_color=COLOR_BORDER_STRONG,
-            scrollbar_button_hover_color=COLOR_ACCENT,
-        )
-        self._smooth_wheel_step(scroll)
-        scroll.pack(fill="both", expand=True, padx=PAGE_PAD_X, pady=PAGE_PAD_Y)
-
-        self._page_header(
-            scroll, "Download media",
-            "Paste a supported link and configure your download.",
-        )
-
-        stats_row = ctk.CTkFrame(
-            scroll, fg_color=COLOR_CARD, corner_radius=CONTROL_RADIUS, border_width=0,
-        )
-        stats_row.pack(fill="x", pady=(0, 7))
-        stats_row.columnconfigure((0, 1, 2, 3), weight=1, uniform="stats")
-        self.stat_card_labels = {}
-        stat_defs = [
-            ("queued", "Queued", "inbox", COLOR_ACCENT),
-            ("downloading", "Active", "download", COLOR_ACCENT_HOVER),
-            ("completed", "Completed", "check", COLOR_SUCCESS),
-            ("history", "Archived", "clock", COLOR_WARNING),
-        ]
-        for index, (key, label, icon_name, color) in enumerate(stat_defs):
-            value_label = ctk.CTkLabel(
-                stats_row, text="0", font=ui_font(18, "bold"),
-                text_color=COLOR_TEXT,
-            )
-            value_label.grid(row=0, column=index, sticky="w", padx=16, pady=(10, 0))
-            ctk.CTkLabel(
-                stats_row, text=label.upper(), font=mono_font(FONT_MICRO, "bold"),
-                text_color=color,
-            ).grid(row=1, column=index, sticky="w", padx=16, pady=(0, 10))
-            if index:
-                layout_frame(stats_row, bg_color=COLOR_BORDER, width=1).grid(
-                    row=0, column=index, rowspan=2, sticky="nsw", pady=10,
-                )
-            self.stat_card_labels[key] = value_label
-
-        card = self._make_card(scroll, "link", "Source & Destination")
-        form = layout_frame(card)
-        form.pack(fill="x", padx=CARD_PAD_X, pady=(0, 15))
-        form.columnconfigure((0, 1), weight=1, uniform="source_fields")
-
-        url_group = layout_frame(form)
-        url_group.grid(row=0, column=0, sticky="ew", padx=(0, 7))
-        url_group.columnconfigure(0, weight=1)
-        ctk.CTkLabel(
-            url_group, text="VIDEO OR PLAYLIST URL", font=mono_font(FONT_MICRO, "bold"),
-            text_color=COLOR_TEXT_MUTED,
-        ).grid(row=0, column=0, sticky="w", pady=(0, 4))
-        self.url_entry = ctk.CTkEntry(
-            url_group, placeholder_text="Paste a supported media link", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.url_entry.grid(row=1, column=0, sticky="ew", padx=(0, 8))
-        ctk.CTkButton(
-            url_group, text="Paste", width=72, height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_SURFACE_ELEVATED, hover_color=COLOR_SURFACE_HOVER,
-            text_color=COLOR_TEXT, command=self.paste_from_clipboard,
-        ).grid(row=1, column=1)
-
-        folder_group = layout_frame(form)
-        folder_group.grid(row=0, column=1, sticky="ew", padx=(7, 0))
-        folder_group.columnconfigure(0, weight=1)
-        ctk.CTkLabel(
-            folder_group, text="SAVE TO", font=mono_font(FONT_MICRO, "bold"),
-            text_color=COLOR_TEXT_MUTED,
-        ).grid(row=0, column=0, sticky="w", pady=(0, 4))
-        self.output_folder_entry = ctk.CTkEntry(
-            folder_group, height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.output_folder_entry.insert(0, self.output_folder)
-        self.output_folder_entry.configure(state="readonly")
-        self.output_folder_entry.grid(row=1, column=0, sticky="ew", padx=(0, 8))
-        ctk.CTkButton(
-            folder_group, text="Browse", width=72, height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.browse_folder,
-        ).grid(row=1, column=1)
-
-        option_row = layout_frame(scroll)
-        option_row.pack(fill="x")
-        option_row.columnconfigure((0, 1), weight=1, uniform="download_options")
-
-        media_card = self._make_card(option_row, "sliders", "Media Profile", pack=False)
-        media_card.grid(row=0, column=0, sticky="nsew", padx=(4, 4), pady=6)
-        self.mode_var = tk.StringVar(value="video")
-        mode_row = ctk.CTkFrame(media_card, fg_color=COLOR_CARD_ALT, corner_radius=CONTROL_RADIUS)
-        mode_row.pack(fill="x", padx=CARD_PAD_X, pady=(0, 10))
-        ctk.CTkRadioButton(
-            mode_row, text="Video", variable=self.mode_var, value="video", command=self.on_mode_change,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(side="left", padx=(12, 24), pady=9)
-        ctk.CTkRadioButton(
-            mode_row, text="Audio only", variable=self.mode_var, value="audio", command=self.on_mode_change,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(side="left", pady=9)
-
-        self.video_settings_frame = layout_frame(media_card)
-        self.video_settings_frame.pack(fill="x", padx=CARD_PAD_X, pady=(0, 5))
-        self.video_settings_frame.columnconfigure(1, weight=1)
-        ctk.CTkLabel(self.video_settings_frame, text="Quality", text_color=COLOR_TEXT_MUTED).grid(
-            row=0, column=0, sticky="w", padx=(0, 10), pady=3,
-        )
-        self.quality_menu = ctk.CTkOptionMenu(
-            self.video_settings_frame, values=list(QUALITY_MAP.keys()), height=CONTROL_HEIGHT,
-            fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT, button_hover_color=COLOR_ACCENT_HOVER,
-            dropdown_fg_color=COLOR_CARD, dropdown_hover_color=COLOR_ACCENT_SOFT,
-            dropdown_text_color=COLOR_TEXT, text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.quality_menu.set("1080p (Full HD)")
-        self.quality_menu.grid(row=0, column=1, sticky="ew", pady=3)
-        self.fps60_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            self.video_settings_frame, text="Prefer 60 FPS when available", variable=self.fps60_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).grid(row=1, column=0, columnspan=2, sticky="w", pady=(5, 3))
-
-        self.audio_settings_frame = layout_frame(media_card)
-        self.audio_settings_frame.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.audio_settings_frame.columnconfigure(1, weight=1)
-        ctk.CTkLabel(self.audio_settings_frame, text="Audio format", text_color=COLOR_TEXT_MUTED).grid(
-            row=0, column=0, sticky="w", padx=(0, 10), pady=3,
-        )
-        self.audio_format_menu = ctk.CTkOptionMenu(
-            self.audio_settings_frame, values=list(AUDIO_FORMAT_MAP.keys()),
-            command=self._on_audio_format_change, height=CONTROL_HEIGHT,
-            fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT, button_hover_color=COLOR_ACCENT_HOVER,
-            dropdown_fg_color=COLOR_CARD, dropdown_hover_color=COLOR_ACCENT_SOFT,
-            dropdown_text_color=COLOR_TEXT, text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.audio_format_menu.set("FLAC (Lossless container)")
-        self.audio_format_menu.grid(row=0, column=1, sticky="ew", pady=3)
-        ctk.CTkLabel(
-            self.audio_settings_frame, text="MP3 bitrate", text_color=COLOR_TEXT_MUTED,
-        ).grid(row=1, column=0, sticky="w", padx=(0, 10), pady=3)
-        self.mp3_bitrate_menu = ctk.CTkOptionMenu(
-            self.audio_settings_frame, values=list(MP3_BITRATE_MAP.keys()),
-            height=CONTROL_HEIGHT, fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT,
-            button_hover_color=COLOR_ACCENT_HOVER, dropdown_fg_color=COLOR_CARD,
-            dropdown_hover_color=COLOR_ACCENT_SOFT, dropdown_text_color=COLOR_TEXT,
-            text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.mp3_bitrate_menu.set("320 kbps")
-        self.mp3_bitrate_menu.grid(row=1, column=1, sticky="ew", pady=3)
-        self.audio_format_help_var = tk.StringVar(
-            value=AUDIO_FORMAT_DESCRIPTIONS["FLAC (Lossless container)"]
-        )
-        ctk.CTkLabel(
-            self.audio_settings_frame, textvariable=self.audio_format_help_var,
-            text_color=COLOR_TEXT_DIM, font=ui_font(FONT_SMALL),
-            justify="left", wraplength=430,
-        ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(4, 0))
-
-        playlist_card = self._make_card(option_row, "list", "Playlist Range", pack=False)
-        playlist_card.grid(row=0, column=1, sticky="nsew", padx=(4, 4), pady=6)
-        self.playlist_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            playlist_card, text="Treat this link as a playlist", variable=self.playlist_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w", padx=CARD_PAD_X, pady=(0, 10))
-        ctk.CTkLabel(
-            playlist_card, text="Choose an optional inclusive item range. Leave End blank for the remainder.",
-            font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_DIM, justify="left", wraplength=420,
-        ).pack(anchor="w", padx=CARD_PAD_X, pady=(0, 11))
-        playlist_fields = layout_frame(playlist_card)
-        playlist_fields.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        playlist_fields.columnconfigure((0, 1), weight=1, uniform="playlist_fields")
-        ctk.CTkLabel(playlist_fields, text="START ITEM", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).grid(row=0, column=0, sticky="w")
-        ctk.CTkLabel(playlist_fields, text="END ITEM", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).grid(row=0, column=1, sticky="w", padx=(8, 0))
-        self.playlist_start_entry = ctk.CTkEntry(
-            playlist_fields, placeholder_text="1", height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.playlist_start_entry.grid(row=1, column=0, sticky="ew", pady=(4, 0))
-        self.playlist_end_entry = ctk.CTkEntry(
-            playlist_fields, placeholder_text="last", height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.playlist_end_entry.grid(row=1, column=1, sticky="ew", padx=(8, 0), pady=(4, 0))
-
-        self.on_mode_change()
-
-        card = self._make_card(scroll, "captions", "Subtitles & Precision Trim")
-        subtitle_body = layout_frame(card)
-        subtitle_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        subtitle_body.columnconfigure(1, weight=1)
-        self.subs_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            subtitle_body, text="Download matching subtitles", variable=self.subs_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).grid(row=0, column=0, sticky="w", padx=(0, 22))
-        trim_fields = layout_frame(subtitle_body)
-        trim_fields.grid(row=0, column=1, sticky="e")
-        ctk.CTkLabel(trim_fields, text="START", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).grid(row=0, column=0, sticky="w")
-        self.start_time_entry = ctk.CTkEntry(
-            trim_fields, placeholder_text="HH:MM:SS", width=116, height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.start_time_entry.grid(row=1, column=0, pady=(3, 0))
-        ctk.CTkLabel(trim_fields, text="END", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).grid(row=0, column=1, sticky="w", padx=(8, 0))
-        self.end_time_entry = ctk.CTkEntry(
-            trim_fields, placeholder_text="HH:MM:SS", width=116, height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.end_time_entry.grid(row=1, column=1, padx=(8, 0), pady=(3, 0))
-        self.add_queue_button = ctk.CTkButton(
-            subtitle_body, text="Add to Queue  →", width=178, height=PRIMARY_BUTTON_HEIGHT,
-            corner_radius=CONTROL_RADIUS, font=ui_font(FONT_SECTION_TITLE, "bold"),
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT_ON_ACCENT,
-            command=self.add_to_queue,
-        )
-        self.add_queue_button.grid(row=0, column=2, sticky="e", padx=(18, 0))
-        ctk.CTkLabel(
-            subtitle_body,
-            text="Language and embed options are in Settings. Blank trim fields keep the full media.",
-            font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_DIM, justify="left",
-        ).grid(row=1, column=0, columnspan=3, sticky="w", pady=(8, 0))
-
-        self._mac_bind_scroll_recursive(scroll, scroll)
-
-    # -- Queue tab --------------------------------------------------------
+        pass
 
     def _build_queue_tab(self, parent):
-        wrapper = layout_frame(parent, bg_color=COLOR_BG)
-        wrapper.pack(fill="both", expand=True, padx=PAGE_PAD_X, pady=PAGE_PAD_Y)
-
-        queue_header = self._page_header(
-            wrapper, "Queue",
-            "> TASK CONTROL  /  live progress and bounded event output",
-        )
-        self.clear_completed_button = ctk.CTkButton(
-            queue_header, text="Clear Completed", width=142, height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.clear_completed,
-        )
-        self.clear_completed_button.pack(side="right")
-
-        self.queue_list_frame = ctk.CTkScrollableFrame(
-            wrapper, height=300, fg_color=COLOR_BG, scrollbar_fg_color=COLOR_BG,
-            scrollbar_button_color=COLOR_BORDER_STRONG,
-            scrollbar_button_hover_color=COLOR_ACCENT,
-        )
-        self._smooth_wheel_step(self.queue_list_frame)
-        self.queue_list_frame.pack(fill="both", expand=True, pady=(0, 12))
-        self.queue_empty_state = layout_frame(self.queue_list_frame, bg_color=COLOR_BG)
-        self.queue_empty_state.pack(fill="x", padx=4, pady=(42, 12))
-        self.queue_empty_image = get_brand_ctk_image(32)
-        ctk.CTkLabel(self.queue_empty_state, text="", image=self.queue_empty_image).pack(pady=(18, 8))
-        ctk.CTkLabel(
-            self.queue_empty_state, text="Queue standing by",
-            font=ui_font(17, "bold"), text_color=COLOR_TEXT,
-        ).pack()
-        ctk.CTkLabel(
-            self.queue_empty_state, text="Add a link from Download to begin. No background animation runs here.",
-            font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_MUTED,
-        ).pack(pady=(4, 18))
-
-        log_card = ctk.CTkFrame(
-            wrapper, fg_color=COLOR_CARD, corner_radius=CONTROL_RADIUS, border_width=0,
-        )
-        log_card.pack(fill="x")
-        log_top = layout_frame(log_card)
-        log_top.pack(fill="x", padx=CARD_PAD_X, pady=(13, 7))
-        log_title = layout_frame(log_top)
-        log_title.pack(side="left")
-        ctk.CTkLabel(log_title, text="", image=get_icon("terminal", 15, COLOR_ACCENT_HOVER)).pack(
-            side="left", padx=(0, 8),
-        )
-        ctk.CTkLabel(
-            log_title, text="ACTIVITY STREAM", font=mono_font(FONT_SMALL, "bold"),
-            text_color=COLOR_TEXT,
-        ).pack(side="left")
-        self.log_status_label = ctk.CTkLabel(
-            log_title, text="  /  BOUNDED 1000 LINES", font=mono_font(FONT_MICRO),
-            text_color=COLOR_TEXT_DIM,
-        )
-        self.log_status_label.pack(side="left")
-        ctk.CTkButton(
-            log_top, text="Clear Log", fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            corner_radius=CONTROL_RADIUS, width=92, height=30, command=self.clear_log,
-        ).pack(side="right")
-        self.log_textbox = EfficientCTkTextbox(
-            log_card, height=150, state="disabled", corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, text_color=COLOR_TEXT_MUTED, font=mono_font(FONT_SMALL),
-            border_width=0,
-        )
-        self.log_textbox.pack(fill="x", padx=CARD_PAD_X, pady=(0, 15))
-        try:
-            self.log_textbox._textbox.tag_configure("info", foreground=COLOR_TEXT_MUTED)
-            self.log_textbox._textbox.tag_configure("warning", foreground=COLOR_WARNING)
-            self.log_textbox._textbox.tag_configure("error", foreground=COLOR_ERROR)
-        except Exception:
-            pass
-
-    # -- History tab ------------------------------------------------------
+        pass
 
     def _build_history_tab(self, parent):
-        wrapper = layout_frame(parent, bg_color=COLOR_BG)
-        wrapper.pack(fill="both", expand=True, padx=PAGE_PAD_X, pady=PAGE_PAD_Y)
-
-        history_header = self._page_header(
-            wrapper, "History", "> ARCHIVE INDEX  /  search, reopen, or repeat completed transfers",
-        )
-        header_action = layout_frame(history_header)
-        self.history_count_label = ctk.CTkLabel(
-            header_action, text="00 ARCHIVED ITEMS", font=mono_font(FONT_MICRO, "bold"),
-            text_color=COLOR_TEXT_DIM,
-        )
-        self.history_count_label.pack(side="left", padx=(0, 12))
-        self.history_clear_button = ctk.CTkButton(
-            header_action, text="Clear History", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.clear_all_history,
-        )
-        self.history_clear_button.pack(side="left")
-        header_action.pack(side="right")
-
-        search_row = layout_frame(wrapper, bg_color=COLOR_BG)
-        search_row.pack(fill="x", pady=(0, 12))
-        self.history_search_entry = ctk.CTkEntry(
-            search_row, placeholder_text="Search by title or saved path", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.history_search_entry.pack(side="left", fill="x", expand=True)
-        self.history_search_entry.bind("<KeyRelease>", self._schedule_history_filter)
-
-        self.history_list_frame = ctk.CTkScrollableFrame(
-            wrapper, fg_color=COLOR_BG, scrollbar_fg_color=COLOR_BG,
-            scrollbar_button_color=COLOR_BORDER_STRONG,
-            scrollbar_button_hover_color=COLOR_ACCENT,
-        )
-        self._smooth_wheel_step(self.history_list_frame)
-        self.history_list_frame.pack(fill="both", expand=True)
-
-    # -- Settings tab -----------------------------------------------------
+        pass
 
     def _build_settings_tab(self, parent):
-        scroll = ctk.CTkScrollableFrame(
-            parent, fg_color=COLOR_BG, scrollbar_fg_color=COLOR_BG,
-            scrollbar_button_color=COLOR_BORDER_STRONG,
-            scrollbar_button_hover_color=COLOR_ACCENT,
-        )
-        self._smooth_wheel_step(scroll)
-        scroll.pack(fill="both", expand=True, padx=PAGE_PAD_X, pady=PAGE_PAD_Y)
-        self._page_header(
-            scroll, "Settings",
-            "> SYSTEM PROFILE  /  preferences are saved automatically on exit",
-        )
-
-        card = self._make_card(scroll, "gear", "Maintenance & Runtime")
-        maintenance = layout_frame(card)
-        maintenance.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.update_button = ctk.CTkButton(
-            maintenance, text="Check & Install", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT_ON_ACCENT,
-            command=self.start_update,
-        )
-        self.update_button.grid(row=0, column=0, sticky="w", padx=(0, 8))
-        self.rollback_button = ctk.CTkButton(
-            maintenance, text="Roll Back", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.start_runtime_rollback,
-        )
-        self.rollback_button.grid(row=0, column=1, sticky="w", padx=(0, 8))
-        self.restore_button = ctk.CTkButton(
-            maintenance, text="Use Bundled", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.start_restore_bundled,
-        )
-        self.restore_button.grid(row=0, column=2, sticky="w", padx=(0, 8))
-        ctk.CTkButton(
-            maintenance, text="Open Output Folder", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=lambda: open_path(self.output_folder),
-        ).grid(row=0, column=3, sticky="w")
-        ctk.CTkLabel(
-            maintenance, text="Update channel", text_color=COLOR_TEXT_MUTED,
-        ).grid(row=1, column=0, sticky="w", pady=(10, 3))
-        self.ytdlp_channel_menu = ctk.CTkOptionMenu(
-            maintenance, values=list(YTDLP_CHANNELS), height=CONTROL_HEIGHT,
-            fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT,
-            button_hover_color=COLOR_ACCENT_HOVER, dropdown_fg_color=COLOR_CARD,
-            dropdown_hover_color=COLOR_ACCENT_SOFT, dropdown_text_color=COLOR_TEXT,
-            text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.ytdlp_channel_menu.set(DEFAULT_YTDLP_CHANNEL)
-        self.ytdlp_channel_menu.grid(row=1, column=1, sticky="w", pady=(10, 3))
-        backend = active_ytdlp_summary()
-        self.runtime_status_var = tk.StringVar(
-            value=f"Active: {backend['version']} ({backend['source']})"
-        )
-        ctk.CTkLabel(
-            maintenance, textvariable=self.runtime_status_var,
-            text_color=COLOR_TEXT_MUTED,
-        ).grid(row=1, column=2, columnspan=2, sticky="w", padx=(10, 0), pady=(10, 3))
-        self.ytdlp_startup_check_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            maintenance, text="Check this channel at startup (at most once every 24 hours)",
-            variable=self.ytdlp_startup_check_var, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).grid(row=2, column=0, columnspan=4, sticky="w", pady=(6, 3))
-        self.remote_components_var = tk.BooleanVar(value=True)
-        ctk.CTkCheckBox(
-            maintenance,
-            text="Allow yt-dlp to fetch official challenge-solver components only when required",
-            variable=self.remote_components_var, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).grid(row=3, column=0, columnspan=4, sticky="w", pady=(6, 3))
-        ctk.CTkLabel(
-            maintenance,
-            text="Updates come from official yt-dlp GitHub releases and are checksum-verified, "
-                 "execution-tested, and activated only while the queue is idle.",
-            font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_DIM,
-        ).grid(row=4, column=0, columnspan=4, sticky="w")
-        settings_grid = layout_frame(scroll)
-        settings_grid.pack(fill="x")
-        settings_grid.columnconfigure((0, 1), weight=1, uniform="settings_columns")
-
-        card = self._make_card(settings_grid, "lock", "Cookies & Sign-in", pack=False)
-        card.grid(row=0, column=0, sticky="nsew", padx=(4, 4), pady=6)
-        cookie_body = layout_frame(card)
-        cookie_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        cookie_body.columnconfigure(1, weight=1)
-        ctk.CTkLabel(cookie_body, text="Source", text_color=COLOR_TEXT_MUTED).grid(
-            row=0, column=0, sticky="w", padx=(0, 9), pady=3,
-        )
-        self.cookie_mode_menu = ctk.CTkOptionMenu(
-            cookie_body, values=list(COOKIE_MODE_MAP.keys()), command=self._on_cookie_mode_change,
-            height=CONTROL_HEIGHT, fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT,
-            button_hover_color=COLOR_ACCENT_HOVER, dropdown_fg_color=COLOR_CARD,
-            dropdown_hover_color=COLOR_ACCENT_SOFT, dropdown_text_color=COLOR_TEXT,
-            text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.cookie_mode_menu.set("Disabled")
-        self.cookie_mode_menu.grid(row=0, column=1, sticky="ew", pady=3)
-        ctk.CTkLabel(cookie_body, text="Browser", text_color=COLOR_TEXT_MUTED).grid(
-            row=1, column=0, sticky="w", padx=(0, 9), pady=3,
-        )
-        self.cookie_browser_menu = ctk.CTkOptionMenu(
-            cookie_body, values=["Chrome", "Edge", "Firefox", "Brave"],
-            height=CONTROL_HEIGHT, fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT,
-            button_hover_color=COLOR_ACCENT_HOVER, dropdown_fg_color=COLOR_CARD,
-            dropdown_hover_color=COLOR_ACCENT_SOFT, dropdown_text_color=COLOR_TEXT,
-            text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.cookie_browser_menu.set("Chrome")
-        self.cookie_browser_menu.grid(row=1, column=1, sticky="ew", pady=3)
-        self.cookie_browser_menu.configure(state="disabled")
-        ctk.CTkLabel(cookie_body, text="Profile", text_color=COLOR_TEXT_MUTED).grid(
-            row=2, column=0, sticky="w", padx=(0, 9), pady=3,
-        )
-        self.cookie_profile_entry = ctk.CTkEntry(
-            cookie_body, placeholder_text="Default profile or profile path (optional)",
-            height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.cookie_profile_entry.grid(row=2, column=1, columnspan=2, sticky="ew", pady=3)
-        self.cookie_profile_entry.configure(state="disabled")
-        ctk.CTkLabel(cookie_body, text="File", text_color=COLOR_TEXT_MUTED).grid(
-            row=3, column=0, sticky="w", padx=(0, 9), pady=3,
-        )
-        self.cookie_file_entry = ctk.CTkEntry(
-            cookie_body, placeholder_text="Netscape cookies.txt", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.cookie_file_entry.grid(row=3, column=1, sticky="ew", pady=3)
-        self.cookie_file_entry.configure(state="disabled")
-        ctk.CTkButton(
-            cookie_body, text="Browse", width=70, height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.browse_cookie_file,
-        ).grid(row=3, column=2, padx=(7, 0), pady=3)
-        self.browser_verify_button = ctk.CTkButton(
-            cookie_body, text="Open Verification Window", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self.start_browser_verification,
-        )
-        self.browser_verify_button.grid(row=4, column=0, columnspan=2, sticky="w", pady=(8, 2))
-        self.browser_clear_button = ctk.CTkButton(
-            cookie_body, text="Clear Session", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_ERROR, text_color=COLOR_TEXT,
-            command=self.clear_browser_session,
-        )
-        self.browser_clear_button.grid(row=4, column=2, sticky="e", pady=(8, 2))
-        self.browser_retry_button = ctk.CTkButton(
-            cookie_body, text="Retry after verification", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color="#FFFFFF",
-            state="disabled", command=self.retry_after_verification,
-        )
-        self.browser_retry_button.grid(
-            row=5, column=0, columnspan=3, sticky="ew", pady=(5, 2)
-        )
-        self.browser_session_status_var = tk.StringVar(value="No verified session loaded.")
-        ctk.CTkLabel(
-            cookie_body, textvariable=self.browser_session_status_var,
-            text_color=COLOR_TEXT_DIM, font=ui_font(FONT_SMALL),
-            justify="left", wraplength=430,
-        ).grid(row=6, column=0, columnspan=3, sticky="w", pady=(2, 0))
-        self._browser_candidate_map = {"Automatic": None}
-        self.browser_candidate_menu = ctk.CTkOptionMenu(
-            cookie_body, values=["Automatic"], height=CONTROL_HEIGHT,
-            fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT,
-            button_hover_color=COLOR_ACCENT_HOVER, dropdown_fg_color=COLOR_CARD,
-            dropdown_hover_color=COLOR_ACCENT_SOFT, dropdown_text_color=COLOR_TEXT,
-            text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.browser_candidate_menu.set("Automatic")
-        self.browser_candidate_menu.grid(row=7, column=0, columnspan=3, sticky="ew", pady=(6, 0))
-        card = self._make_card(settings_grid, "captions", "Subtitle Preferences", pack=False)
-        card.grid(row=0, column=1, sticky="nsew", padx=(4, 4), pady=6)
-        subtitle_body = layout_frame(card)
-        subtitle_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        ctk.CTkLabel(
-            subtitle_body, text="LANGUAGE PATTERN", font=mono_font(FONT_MICRO, "bold"),
-            text_color=COLOR_TEXT_MUTED,
-        ).pack(anchor="w")
-        self.sub_langs_entry = ctk.CTkEntry(
-            subtitle_body, height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.sub_langs_entry.insert(0, DEFAULT_SUBTITLE_LANGUAGE_PATTERN)
-        self.sub_langs_entry.pack(fill="x", pady=(4, 4))
-        ctk.CTkLabel(
-            subtitle_body,
-            text="Regular-expression matching is supported. en.* matches en, en-US, en-GB, and similar English variants.",
-            font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_DIM,
-            justify="left", wraplength=430,
-        ).pack(anchor="w", pady=(0, 8))
-        self.embed_subs_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            subtitle_body, text="Embed subtitles into the video (remuxes to MKV)",
-            variable=self.embed_subs_var, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w", pady=(0, 6))
-        self.auto_captions_var = tk.BooleanVar(value=True)
-        ctk.CTkCheckBox(
-            subtitle_body, text="Include automatically generated captions",
-            variable=self.auto_captions_var, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w")
-
-        card = self._make_card(settings_grid, "music", "Audio Extraction", pack=False)
-        card.grid(row=1, column=0, sticky="nsew", padx=(4, 4), pady=6)
-        audio_body = layout_frame(card)
-        audio_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.embed_thumbnail_var = tk.BooleanVar(value=True)
-        ctk.CTkCheckBox(
-            audio_body, text="Embed the thumbnail as cover art", variable=self.embed_thumbnail_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w", pady=(0, 7))
-        self.embed_metadata_var = tk.BooleanVar(value=True)
-        ctk.CTkCheckBox(
-            audio_body, text="Embed title, artist, and available metadata", variable=self.embed_metadata_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w")
-
-        card = self._make_card(settings_grid, "block", "SponsorBlock", pack=False)
-        card.grid(row=1, column=1, sticky="nsew", padx=(4, 4), pady=6)
-        sponsor_body = layout_frame(card)
-        sponsor_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.sponsorblock_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            sponsor_body, text="Remove selected sponsor/ad segments", variable=self.sponsorblock_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w", pady=(0, 8))
-        ctk.CTkLabel(sponsor_body, text="CATEGORIES", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).pack(anchor="w")
-        self.sponsorblock_entry = ctk.CTkEntry(
-            sponsor_body, height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.sponsorblock_entry.insert(0, "sponsor,selfpromo,interaction")
-        self.sponsorblock_entry.pack(fill="x", pady=(4, 0))
-
-        card = self._make_card(settings_grid, "globe", "Network", pack=False)
-        card.grid(row=2, column=0, sticky="nsew", padx=(4, 4), pady=6)
-        net_body = layout_frame(card)
-        net_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        net_body.columnconfigure(1, weight=1)
-        ctk.CTkLabel(net_body, text="Proxy URL", text_color=COLOR_TEXT_MUTED).grid(
-            row=0, column=0, sticky="w", padx=(0, 9), pady=3,
-        )
-        self.proxy_entry = ctk.CTkEntry(
-            net_body, placeholder_text="http://127.0.0.1:8080", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.proxy_entry.grid(row=0, column=1, sticky="ew", pady=3)
-        ctk.CTkLabel(net_body, text="Rate limit", text_color=COLOR_TEXT_MUTED).grid(
-            row=1, column=0, sticky="w", padx=(0, 9), pady=3,
-        )
-        self.rate_limit_entry = ctk.CTkEntry(
-            net_body, placeholder_text="2M or 500K", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.rate_limit_entry.grid(row=1, column=1, sticky="ew", pady=3)
-        ctk.CTkLabel(
-            net_body, text="Browser request profile", text_color=COLOR_TEXT_MUTED,
-        ).grid(row=2, column=0, sticky="w", padx=(0, 9), pady=3)
-        self.impersonation_menu = ctk.CTkOptionMenu(
-            net_body,
-            values=["Automatic", "Chrome", "Firefox", "Safari", "Disabled"],
-            height=CONTROL_HEIGHT, fg_color=COLOR_CARD_ALT, button_color=COLOR_ACCENT,
-            button_hover_color=COLOR_ACCENT_HOVER, dropdown_fg_color=COLOR_CARD,
-            dropdown_hover_color=COLOR_ACCENT_SOFT, dropdown_text_color=COLOR_TEXT,
-            text_color=COLOR_TEXT, corner_radius=CONTROL_RADIUS,
-        )
-        self.impersonation_menu.set("Automatic")
-        self.impersonation_menu.grid(row=2, column=1, sticky="ew", pady=3)
-        self.force_ipv4_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            net_body, text="Force IPv4 connections", variable=self.force_ipv4_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).grid(row=3, column=0, columnspan=2, sticky="w", pady=(8, 0))
-
-        card = self._make_card(settings_grid, "folder", "Files & Naming", pack=False)
-        card.grid(row=2, column=1, sticky="nsew", padx=(4, 4), pady=6)
-        files_body = layout_frame(card)
-        files_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.restrict_filenames_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            files_body, text="Restrict filenames to plain ASCII", variable=self.restrict_filenames_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w", pady=(0, 6))
-        self.use_archive_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            files_body, text="Skip items already recorded in the archive", variable=self.use_archive_var,
-            fg_color=COLOR_ACCENT, hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w", pady=(0, 8))
-        ctk.CTkLabel(files_body, text="FILENAME TEMPLATE", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).pack(anchor="w")
-        self.output_template_entry = ctk.CTkEntry(
-            files_body, height=CONTROL_HEIGHT, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_CARD_ALT, border_width=1, border_color=COLOR_BORDER_STRONG,
-        )
-        self.output_template_entry.insert(0, "%(title)s.%(ext)s")
-        self.output_template_entry.pack(fill="x", pady=(4, 7))
-        ctk.CTkLabel(files_body, text="FORMAT SORTING (-S)", font=mono_font(FONT_MICRO, "bold"),
-                     text_color=COLOR_TEXT_MUTED).pack(anchor="w")
-        self.format_sort_entry = ctk.CTkEntry(
-            files_body, placeholder_text="res,ext:mp4:m4a", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT, border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.format_sort_entry.pack(fill="x", pady=(4, 0))
-
-        # Media Observer settings card: passive sensor status/health/update
-        # (read-only adapter; ranking/validation stay core-owned).
-        card = self._make_card(settings_grid, "gear", "Media Observer", pack=False)
-        card.grid(row=3, column=0, sticky="nsew", padx=(4, 4), pady=6)
-        observer_body = layout_frame(card)
-        observer_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.observer_status_label = ctk.CTkLabel(
-            observer_body,
-            text=self._media_observer_status_text(),
-            text_color=COLOR_TEXT, font=ui_font(FONT_SMALL),
-            anchor="w", justify="left", wraplength=430,
-        )
-        self.observer_status_label.pack(anchor="w")
-        ctk.CTkLabel(
-            observer_body,
-            text="puemos/hls-downloader · MIT · github.com/puemos/hls-downloader",
-            text_color=COLOR_TEXT_MUTED, font=ui_font(FONT_SMALL), anchor="w",
-        ).pack(anchor="w", pady=(2, 6))
-        observer_buttons = ctk.CTkFrame(observer_body, fg_color="transparent")
-        observer_buttons.pack(fill="x")
-        ctk.CTkButton(
-            observer_buttons, text="Check for updates", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            width=150, command=self.start_observer_check,
-        ).pack(side="left", padx=(0, 8))
-        ctk.CTkButton(
-            observer_buttons, text="Update", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            width=110, command=self.start_observer_update,
-        ).pack(side="left")
-
-        # The settings card for the homemade adblock engine was removed: the
-        # protected browser's content filtering is the bundled uBOL extension
-        # (installed before the requested page loads), which manages its own
-        # filter lists.
-        card = self._make_card(settings_grid, "inbox", "About", pack=False)
-        card.grid(row=3, column=1, sticky="nsew", padx=(4, 4), pady=6)
-        about_body = layout_frame(card)
-        about_body.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        ctk.CTkLabel(
-            about_body, text=f"{APP_NAME} {APP_VERSION}  /  BUILD {APP_BUILD}",
-            text_color=COLOR_TEXT, font=mono_font(FONT_SECTION_TITLE, "bold"),
-            anchor="w",
-        ).pack(anchor="w")
-        ctk.CTkLabel(
-            about_body, text=APP_COPYRIGHT, text_color=COLOR_TEXT_MUTED,
-            font=ui_font(FONT_SMALL), anchor="w",
-        ).pack(anchor="w", pady=(2, 2))
-        ctk.CTkLabel(
-            about_body,
-            text="Dense desktop media downloader with same-job protected browser "
-                 "fallback, queue/history persistence, and local-only capture "
-                 "protection. See the sidebar footer for the version/build marker.",
-            font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_DIM,
-            justify="left", wraplength=430,
-        ).pack(anchor="w", pady=(2, 8))
-        ctk.CTkButton(
-            about_body, text="Licenses & notices", height=CONTROL_HEIGHT,
-            corner_radius=CONTROL_RADIUS, fg_color=COLOR_SURFACE_ELEVATED,
-            hover_color=COLOR_SURFACE_HOVER, text_color=COLOR_TEXT,
-            command=self._open_notices,
-        ).pack(anchor="w")
-
-        card = self._make_card(
-            scroll, "terminal", "Advanced: Explicit Custom yt-dlp Command",
-            border_color=COLOR_WARNING,
-        )
-        advanced = layout_frame(card)
-        advanced.pack(fill="x", padx=CARD_PAD_X, pady=(0, 14))
-        self.use_custom_command_var = tk.BooleanVar(value=False)
-        ctk.CTkCheckBox(
-            advanced, text="I understand: use this custom command for the next queued download",
-            variable=self.use_custom_command_var, fg_color=COLOR_ACCENT,
-            hover_color=COLOR_ACCENT_HOVER, text_color=COLOR_TEXT,
-        ).pack(anchor="w")
-        ctk.CTkLabel(
-            advanced,
-            text="SAFETY GATE  /  Text below is inert until the checkbox is explicitly enabled. Custom mode overrides most normal options.",
-            font=mono_font(FONT_MICRO, "bold"), text_color=COLOR_WARNING,
-            justify="left", wraplength=900,
-        ).pack(anchor="w", pady=(6, 8))
-        self.custom_command_box = EfficientCTkTextbox(
-            advanced, height=78, corner_radius=CONTROL_RADIUS, fg_color=COLOR_CARD_ALT,
-            text_color=COLOR_TEXT, font=mono_font(FONT_SMALL), border_width=1,
-            border_color=COLOR_BORDER_STRONG,
-        )
-        self.custom_command_box.pack(fill="x")
-
-        self._mac_bind_scroll_recursive(scroll, scroll)
-
-    # ------------------------------------------------------------------
-    # UI event handlers
-    # ------------------------------------------------------------------
+        pass
 
     def on_mode_change(self):
-        if self.mode_var.get() == "video":
-            self._set_frame_state(self.video_settings_frame, "normal")
-            self._set_frame_state(self.audio_settings_frame, "disabled")
-        else:
-            self._set_frame_state(self.video_settings_frame, "disabled")
-            self._set_frame_state(self.audio_settings_frame, "normal")
-            self._on_audio_format_change(self.audio_format_menu.get())
+        pass
 
     def _on_audio_format_change(self, selection):
-        description = AUDIO_FORMAT_DESCRIPTIONS.get(selection, "")
-        if hasattr(self, "audio_format_help_var"):
-            self.audio_format_help_var.set(description)
-        if hasattr(self, "mp3_bitrate_menu"):
-            enabled = self.mode_var.get() == "audio" and selection == "MP3 (Compressed)"
-            self.mp3_bitrate_menu.configure(state="normal" if enabled else "disabled")
+        pass
 
-    @staticmethod
     def _set_frame_state(frame, state):
-        for child in frame.winfo_children():
-            try:
-                child.configure(state=state)
-            except Exception:
-                pass
+        pass
 
     def _mac_bind_scroll_recursive(self, widget, scroll_frame):
-        """Forward macOS trackpad events from nested controls to their local
-        scroll frame. Global Darwin handler can lose nested
-        events; returning ``break`` prevents that handler from scrolling a
-        second time. Text boxes, sliders and scrollbars keep native behavior."""
-        if platform.system() != "Darwin":
-            return
-        excluded_types = (ctk.CTkTextbox, ctk.CTkSlider, ctk.CTkScrollbar)
-        if isinstance(widget, excluded_types):
-            return
-        try:
-            widget.bind(
-                "<MouseWheel>",
-                lambda event, frame=scroll_frame: self._mac_scroll_forward(event, frame),
-                add="+",
-            )
-        except Exception:
-            pass
-        try:
-            children = widget.winfo_children()
-        except Exception:
-            children = []
-        for child in children:
-            self._mac_bind_scroll_recursive(child, scroll_frame)
+        pass
 
     def _mac_scroll_forward(self, event, scroll_frame):
-        if platform.system() != "Darwin":
-            return None
-        try:
-            canvas = scroll_frame._parent_canvas
-            if canvas.yview() == (0.0, 1.0):
-                return "break"
-            delta = getattr(event, "delta", 0)
-            amount = -int(delta)
-            if amount == 0 and delta:
-                amount = -1 if delta > 0 else 1
-            if amount:
-                canvas.yview_scroll(amount, "units")
-            return "break"
-        except Exception:
-            return None
+        pass
 
     def _on_cookie_mode_change(self, choice):
-        if choice == "Selected Browser":
-            self.cookie_browser_menu.configure(state="normal")
-            self.cookie_profile_entry.configure(state="normal")
-            self.cookie_file_entry.configure(state="disabled")
-        elif choice == "cookies.txt File":
-            self.cookie_browser_menu.configure(state="disabled")
-            self.cookie_profile_entry.configure(state="disabled")
-            self.cookie_file_entry.configure(state="normal")
-        else:
-            self.cookie_browser_menu.configure(state="disabled")
-            self.cookie_profile_entry.configure(state="disabled")
-            self.cookie_file_entry.configure(state="disabled")
+        pass
 
     def _open_notices(self):
         notices = resource_path(Path("THIRD_PARTY_NOTICES.md"))
@@ -5799,21 +4453,10 @@ class VRKADownloader(_VRKABase):  # type: ignore
         open_path(str(notices))
 
     def browse_folder(self):
-        folder = filedialog.askdirectory(initialdir=self.output_folder)
-        if folder:
-            self.output_folder = folder
-            self.output_folder_entry.configure(state="normal")
-            self.output_folder_entry.delete(0, "end")
-            self.output_folder_entry.insert(0, folder)
-            self.output_folder_entry.configure(state="readonly")
+        pass
 
     def browse_cookie_file(self):
-        path = filedialog.askopenfilename(title="Select cookies.txt",
-                                           filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-        if path:
-            self.cookie_file_entry.configure(state="normal")
-            self.cookie_file_entry.delete(0, "end")
-            self.cookie_file_entry.insert(0, path)
+        pass
 
     def start_browser_verification(self, requested_url=None):
         url = (requested_url or self.url_entry.get()).strip()
@@ -5929,32 +4572,10 @@ class VRKADownloader(_VRKABase):  # type: ignore
         self.ui_queue.put(("log", "Cleared the temporary VRKA Browser session."))
 
     def _prompt_browser_verification(self, url, category):
-        reason = {
-            "cloudflare": "The website is blocking automated access.",
-            "cookies": "The website appears to require a signed-in browser session.",
-            "unsupported": "The page opened, but yt-dlp could not identify playable media.",
-            "expired": "The previously verified media address or session is no longer valid.",
-        }.get(category, "Browser verification may be required.")
-        open_now = messagebox.askyesno(
-            "Browser verification required",
-            reason + "\n\nOpen the exact page in the on-demand VRKA Browser now? "
-            "After verification or sign-in, close that browser and add the download again.",
-        )
-        if open_now:
-            self._pending_browser_retry_url = url
-            self.start_browser_verification(url)
-    def paste_from_clipboard(self):
-        try:
-            text = self.clipboard_get()
-        except Exception:
-            return
-        if text:
-            self.url_entry.delete(0, "end")
-            self.url_entry.insert(0, text.strip())
+        pass
 
-    # ------------------------------------------------------------------
-    # UI queue processing (runs on the main/UI thread)
-    # ------------------------------------------------------------------
+    def paste_from_clipboard(self):
+        pass
 
     def process_ui_queue(self):
         if self._closing:
@@ -6100,86 +4721,7 @@ class VRKADownloader(_VRKABase):  # type: ignore
     # ------------------------------------------------------------------
 
     def add_task_row(self, task):
-        self._refresh_queue_empty_state()
-        row = ctk.CTkFrame(
-            self.queue_list_frame, fg_color=COLOR_CARD, corner_radius=CONTROL_RADIUS,
-            border_width=0,
-        )
-        row.pack(fill="x", padx=4, pady=5)
-        row.columnconfigure(1, weight=1)
-
-        icon_name, icon_color = _kind_icon_and_color(task.mode)
-        chip = self._icon_chip(row, icon_name, icon_color, size=40, glyph_size=18)
-        chip.grid(row=0, column=0, rowspan=3, padx=(15, 13), pady=15, sticky="n")
-
-        title_label = ctk.CTkLabel(
-            row, text=task.title or task.url, anchor="w",
-            font=ui_font(FONT_SECTION_TITLE, "bold"), text_color=COLOR_TEXT,
-        )
-        title_label.grid(row=0, column=1, sticky="ew", pady=(13, 1))
-        mode_name = "AUDIO EXTRACT" if task.mode == "audio" else (
-            "CUSTOM COMMAND" if task.mode == "custom" else "VIDEO DOWNLOAD"
-        )
-        metadata_label = ctk.CTkLabel(
-            row, text=f"{mode_name}  /  {task.url}", anchor="w",
-            font=mono_font(FONT_MICRO), text_color=COLOR_TEXT_DIM,
-        )
-        metadata_label.grid(row=1, column=1, sticky="ew", pady=(0, 7))
-
-        progress_row = layout_frame(row)
-        progress_row.grid(row=2, column=1, sticky="ew", pady=(0, 13), padx=(0, 8))
-        progress_row.columnconfigure(0, weight=1)
-        progress_bar = ctk.CTkProgressBar(
-            progress_row, height=7, corner_radius=4,
-            progress_color=COLOR_ACCENT, fg_color=COLOR_CARD_ALT,
-        )
-        progress_bar.set(0)
-        progress_bar.grid(row=0, column=0, sticky="ew")
-        percent_label = ctk.CTkLabel(
-            progress_row, text="000%", width=42, anchor="e",
-            font=mono_font(FONT_MICRO, "bold"), text_color=COLOR_TEXT_MUTED,
-        )
-        percent_label.grid(row=0, column=1, padx=(8, 0))
-
-        controls = layout_frame(row)
-        controls.grid(row=0, column=2, rowspan=3, padx=(7, 14), pady=13, sticky="e")
-        status_label = ctk.CTkLabel(
-            controls, text="QUEUED", font=mono_font(FONT_MICRO, "bold"),
-            fg_color=COLOR_BORDER_STRONG, text_color=COLOR_TEXT_ON_ACCENT,
-            corner_radius=6, width=90, height=22,
-        )
-        status_label.pack(anchor="e", pady=(0, 8))
-        button_row = layout_frame(controls)
-        button_row.pack(anchor="e")
-        cancel_btn = ctk.CTkButton(
-            button_row, text="Cancel", width=68, height=30, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_SURFACE_ELEVATED, hover_color=COLOR_SURFACE_HOVER,
-            text_color=COLOR_TEXT, command=lambda tid=task.id: self.cancel_task(tid),
-        )
-        cancel_btn.pack(side="left", padx=(0, 5))
-        retry_btn = ctk.CTkButton(
-            button_row, text="Retry", width=64, height=30, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_SURFACE_ELEVATED, hover_color=COLOR_ACCENT_SOFT_HOVER,
-            text_color=COLOR_TEXT, command=lambda tid=task.id: self.retry_task(tid),
-        )
-        retry_btn.configure(state="disabled")
-        retry_btn.pack(side="left", padx=(0, 5))
-        remove_btn = ctk.CTkButton(
-            button_row, text="Remove", width=68, height=30, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_SURFACE_ELEVATED, hover_color=COLOR_ERROR,
-            text_color=COLOR_TEXT, command=lambda tid=task.id: self.remove_task(tid),
-        )
-        remove_btn.configure(state="disabled")
-        remove_btn.pack(side="left")
-
-        self.task_widgets[task.id] = {
-            "frame": row, "title": title_label, "metadata": metadata_label,
-            "status": status_label, "progress": progress_bar,
-            "percent": percent_label, "cancel_btn": cancel_btn,
-            "retry_btn": retry_btn, "remove_btn": remove_btn,
-        }
-        self._mac_bind_scroll_recursive(row, self.queue_list_frame)
-        self._refresh_stats()
+        pass
 
     def _update_task_progress(self, task_id, percent):
         widget_set = self.task_widgets.get(task_id)
@@ -6429,13 +4971,7 @@ class VRKADownloader(_VRKABase):  # type: ignore
         )
 
     def _show_core_task(self, task):
-        """Expose a persisted task only after the core has made it durable."""
-        if self._find_task(task.id) is not None:
-            return
-        with self.tasks_lock:
-            self.tasks.append(task)
-        self.add_task_row(task)
-        self._refresh_stats()
+        pass
 
     def _protected_browser_command(self, record, result_path):
         return build_self_invocation() + [
@@ -7602,145 +6138,25 @@ class VRKADownloader(_VRKABase):  # type: ignore
         self.ui_queue.put(("history_refresh", None))
 
     def _schedule_history_filter(self, _event=None):
-        if self._history_filter_after_id:
-            try:
-                self.after_cancel(self._history_filter_after_id)
-            except Exception:
-                pass
-        self._history_filter_after_id = self.after(
-            HISTORY_SEARCH_DEBOUNCE_MS,
-            self._apply_history_filter,
-        )
+        pass
 
     def _apply_history_filter(self):
-        self._history_visible_limit = HISTORY_PAGE_SIZE
-        self._rebuild_history_list(self.history_search_entry.get(), force=True)
+        pass
 
     def _rebuild_history_list(self, filter_text="", force=False):
-        normalized_filter = (filter_text or "").strip().lower()
-        if not force and normalized_filter == self._last_history_filter:
-            return
-        self._last_history_filter = normalized_filter
-        self._history_filter_after_id = None
-        for child in self.history_list_frame.winfo_children():
-            child.destroy()
-
-        matches = []
-        for entry in self.history:
-            searchable = f"{entry.get('title', '')} {entry.get('path', '')}".lower()
-            if normalized_filter and normalized_filter not in searchable:
-                continue
-            matches.append(entry)
-
-        if not matches:
-            empty = layout_frame(self.history_list_frame, bg_color=COLOR_BG)
-            empty.pack(fill="x", padx=4, pady=(38, 12))
-            empty_image = get_brand_ctk_image(32)
-            empty._brand_image = empty_image
-            ctk.CTkLabel(empty, text="", image=empty_image).pack(pady=(18, 8))
-            title = "No matching archive entries" if normalized_filter else "Archive is empty"
-            detail = (
-                "Try a different title or path." if normalized_filter else
-                "Completed downloads appear here without scanning your entire drive."
-            )
-            ctk.CTkLabel(
-                empty, text=title, font=ui_font(17, "bold"), text_color=COLOR_TEXT,
-            ).pack()
-            ctk.CTkLabel(
-                empty, text=detail, font=ui_font(FONT_SMALL), text_color=COLOR_TEXT_MUTED,
-            ).pack(pady=(4, 18))
-        else:
-            visible_matches = matches[:self._history_visible_limit]
-            for entry in visible_matches:
-                self._add_history_row(entry)
-            remaining = len(matches) - len(visible_matches)
-            if remaining > 0:
-                load_more = ctk.CTkButton(
-                    self.history_list_frame,
-                    text=f"Show {min(HISTORY_PAGE_SIZE, remaining)} more",
-                    height=CONTROL_HEIGHT,
-                    corner_radius=CONTROL_RADIUS,
-                    fg_color=COLOR_SURFACE_ELEVATED,
-                    hover_color=COLOR_SURFACE_HOVER,
-                    text_color=COLOR_TEXT,
-                    command=self._show_more_history,
-                )
-                load_more.pack(pady=12)
-
-        if hasattr(self, "history_count_label"):
-            if normalized_filter:
-                self.history_count_label.configure(
-                    text=f"{len(matches):02d} MATCHES  /  {len(self.history):02d} TOTAL",
-                )
-            else:
-                self.history_count_label.configure(text=f"{len(self.history):02d} ARCHIVED ITEMS")
+        pass
 
     def _show_more_history(self):
-        self._history_visible_limit += HISTORY_PAGE_SIZE
-        self._rebuild_history_list(self.history_search_entry.get(), force=True)
+        pass
 
     def _add_history_row(self, entry):
-        row = ctk.CTkFrame(
-            self.history_list_frame, fg_color=COLOR_CARD, corner_radius=CONTROL_RADIUS,
-            border_width=0,
-        )
-        row.pack(fill="x", padx=4, pady=5)
-        row.columnconfigure(1, weight=1)
-
-        icon_name, icon_color = _kind_icon_and_color(entry.get("mode", "video"))
-        self._icon_chip(row, icon_name, icon_color, size=40, glyph_size=18).grid(
-            row=0, column=0, rowspan=3, padx=(15, 13), pady=15, sticky="n",
-        )
-
-        kind = "Audio" if entry.get("mode") == "audio" else (
-            "Custom" if entry.get("mode") == "custom" else "Video"
-        )
-        ctk.CTkLabel(
-            row, text=entry.get("title") or entry.get("url", "Untitled"), anchor="w",
-            font=ui_font(FONT_SECTION_TITLE, "bold"), text_color=COLOR_TEXT,
-        ).grid(row=0, column=1, sticky="ew", pady=(12, 0))
-        ctk.CTkLabel(
-            row, text=f"{kind.upper()}  /  {entry.get('timestamp', '')}", anchor="w",
-            text_color=COLOR_TEXT_MUTED, font=mono_font(FONT_MICRO, "bold"),
-        ).grid(row=1, column=1, sticky="ew", pady=(1, 0))
-        saved_path = entry.get("path") or "Saved path unavailable"
-        ctk.CTkLabel(
-            row, text=saved_path, anchor="w", text_color=COLOR_TEXT_DIM,
-            font=mono_font(FONT_MICRO),
-        ).grid(row=2, column=1, sticky="ew", pady=(1, 12))
-
-        buttons = layout_frame(row)
-        buttons.grid(row=0, column=2, rowspan=3, padx=14, sticky="e")
-        ctk.CTkButton(
-            buttons, text="Open", width=64, height=30, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_ACCENT_SOFT, hover_color=COLOR_ACCENT_SOFT_HOVER,
-            text_color=COLOR_TEXT, command=lambda item=entry: self.open_history_item(item),
-        ).pack(side="left", padx=(0, 5))
-        ctk.CTkButton(
-            buttons, text="Again", width=64, height=30, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_SURFACE_ELEVATED, hover_color=COLOR_SURFACE_HOVER,
-            text_color=COLOR_TEXT, command=lambda item=entry: self.redownload_from_history(item),
-        ).pack(side="left", padx=(0, 5))
-        ctk.CTkButton(
-            buttons, text="Remove", width=68, height=30, corner_radius=CONTROL_RADIUS,
-            fg_color=COLOR_SURFACE_ELEVATED, hover_color=COLOR_ERROR,
-            text_color=COLOR_TEXT, command=lambda item=entry: self.remove_history_entry(item),
-        ).pack(side="left")
-        self._mac_bind_scroll_recursive(row, self.history_list_frame)
+        pass
 
     def open_history_item(self, entry):
-        path = entry.get("path")
-        if path and os.path.exists(path):
-            open_path(path)
-        elif path and os.path.exists(os.path.dirname(path)):
-            open_path(os.path.dirname(path))
-        else:
-            messagebox.showinfo("Not found", "This file could no longer be found on disk.")
+        pass
 
     def redownload_from_history(self, entry):
-        self.url_entry.delete(0, "end")
-        self.url_entry.insert(0, entry["url"])
-        self.show_page("Download")
+        pass
 
     def remove_history_entry(self, entry):
         self.history = [h for h in self.history if h["id"] != entry["id"]]
@@ -7815,11 +6231,7 @@ class VRKADownloader(_VRKABase):  # type: ignore
         return {}
 
     def _set_entry(self, entry, value):
-        prev_state = entry.cget("state")
-        entry.configure(state="normal")
-        entry.delete(0, "end")
-        entry.insert(0, value)
-        entry.configure(state=prev_state)
+        pass
 
     def apply_settings(self, s):
         if not s:
@@ -7905,18 +6317,10 @@ class VRKADownloader(_VRKABase):  # type: ignore
             return any(task.status in ("queued", "downloading") for task in self.tasks)
 
     def _refresh_runtime_status(self):
-        backend = active_ytdlp_summary()
-        if hasattr(self, "runtime_status_var"):
-            self.runtime_status_var.set(
-                f"Active: {backend['version']} ({backend['source']})"
-            )
+        pass
 
     def _set_runtime_controls(self, enabled):
-        state = "normal" if enabled else "disabled"
-        for name in ("update_button", "rollback_button", "restore_button"):
-            widget = getattr(self, name, None)
-            if widget is not None:
-                widget.configure(state=state)
+        pass
 
     def start_update(self):
         if self._downloads_are_busy():
@@ -8278,8 +6682,8 @@ if __name__ == "__main__":
             sys.exit(yt_dlp.main(sys.argv[2:]))
 
     try:
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")
+        # Legacy UI removed
+        # Legacy UI removed
 
         app = VRKADownloader()
         app.mainloop()
@@ -8290,7 +6694,7 @@ if __name__ == "__main__":
         crash_text = traceback.format_exc()
         _write_crash_log(crash_text)
         try:
-            import tkinter.messagebox as _mb
+            # Legacy Tk import removed
             _mb.showerror(
                 f"{APP_NAME} - Startup Error",
                 f"{APP_NAME} hit an error on startup and couldn't open.\n\n"

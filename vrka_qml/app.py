@@ -71,7 +71,7 @@ def main(argv: list[str] | None = None) -> int:
     engine = QQmlApplicationEngine()
     # QML exposure: identity strings, the presentation bridge, the download
     # controller, and the queue/history action controller. One shared queue
-    # feeds the bridge; the engine host produces into it exactly like the CTk
+    # feeds the bridge; the engine host produces into it directly
     # application does.
     shared_queue = queue.Queue()
     engine_host = EngineHost(shared_queue)

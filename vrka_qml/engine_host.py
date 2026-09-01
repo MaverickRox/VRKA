@@ -62,7 +62,7 @@ class EngineHost:
         return attribute
 
     # ------------------------------------------------------------------
-    # Adapter seams (widget-free mirrors of the CTk callbacks)
+    # Presentation adapter callbacks
     # ------------------------------------------------------------------
 
     def _protected_browser_command(self, record, result_path):
@@ -82,7 +82,7 @@ class EngineHost:
 
         The submit-time QUEUED core event is consumed inside the adapter
         (the task is registered after ``scheduler.submit`` returns), so the
-        CTk app renders the row through this callback instead. The QML
+        Queue model receives updates through this callback. The QML
         channel for the same information is the existing ``task_status``
         tuple plus a presentation-only ``task_created`` carrying identity so
         the QML model learns url/mode without a second backend lookup.
