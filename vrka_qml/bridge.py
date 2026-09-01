@@ -62,6 +62,8 @@ class PresentationBridge(QObject):
         self.tasks.rowsInserted.connect(self.taskCountChanged)
         self.tasks.rowsRemoved.connect(self.taskCountChanged)
         self.tasks.modelReset.connect(self.taskCountChanged)
+        self.tasks.dataChanged.connect(self.taskCountChanged)
+        self.tasks.layoutChanged.connect(self.taskCountChanged)
         self.log.rowsInserted.connect(self.logLineCountChanged)
         self.log.rowsRemoved.connect(self.logLineCountChanged)
         self.log.modelReset.connect(self.logLineCountChanged)
@@ -93,7 +95,8 @@ class PresentationBridge(QObject):
     def queuedCount(self) -> int:
         c = 0
         for i in range(self.tasks.rowCount()):
-            if self.tasks.index(i).data(self.tasks.StatusRole) == "queued":
+            st = str(self.tasks.index(i).data(self.tasks.StatusRole) or "").lower()
+            if st in ("queued", "waiting", "pending"):
                 c += 1
         return c
 
@@ -101,7 +104,8 @@ class PresentationBridge(QObject):
     def activeCount(self) -> int:
         c = 0
         for i in range(self.tasks.rowCount()):
-            if self.tasks.index(i).data(self.tasks.StatusRole) == "downloading":
+            st = str(self.tasks.index(i).data(self.tasks.StatusRole) or "").lower()
+            if st in ("downloading", "running", "active", "processing"):
                 c += 1
         return c
 
@@ -109,7 +113,8 @@ class PresentationBridge(QObject):
     def completedCount(self) -> int:
         c = 0
         for i in range(self.tasks.rowCount()):
-            if self.tasks.index(i).data(self.tasks.StatusRole) == "completed":
+            st = str(self.tasks.index(i).data(self.tasks.StatusRole) or "").lower()
+            if st in ("completed", "done", "finished"):
                 c += 1
         return c
 

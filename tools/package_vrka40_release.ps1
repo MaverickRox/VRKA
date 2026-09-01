@@ -1,5 +1,5 @@
 param(
-    [string]$OutputDirectory = "outputs\VRKA-4.0.0-build016-release"
+    [string]$OutputDirectory = "outputs\VRKA-4.0.1-build017-release"
 )
 
 $ErrorActionPreference = "Stop"
@@ -7,7 +7,7 @@ Set-StrictMode -Version Latest
 
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $outputRoot = [System.IO.Path]::GetFullPath((Join-Path $projectRoot $OutputDirectory))
-$stageRoot = Join-Path $projectRoot ".release_stage_4_0_0"
+$stageRoot = Join-Path $projectRoot ".release_stage_4_0_1"
 
 Write-Host "Creating release package at $outputRoot..."
 
@@ -18,10 +18,10 @@ New-Item -ItemType Directory -Path $stageRoot -Force | Out-Null
 New-Item -ItemType Directory -Path $outputRoot -Force | Out-Null
 
 $names = [ordered]@{
-    PortableZip = "VRKA-4.0.0-build016-portable-Windows-x64.zip"
-    PortableExe = "VRKA-4.0.0-build016-portable-Windows-x64.exe"
-    Installer   = "VRKA-4.0.0-build016-setup-Windows-x64.exe"
-    SourceZip   = "VRKA-4.0.0-build016-complete-source.zip"
+    PortableZip = "VRKA-4.0.1-build017-portable-Windows-x64.zip"
+    PortableExe = "VRKA-4.0.1-build017-portable-Windows-x64.exe"
+    Installer   = "VRKA-4.0.1-build017-setup-Windows-x64.exe"
+    SourceZip   = "VRKA-4.0.1-build017-complete-source.zip"
     Hashes      = "SHA256SUMS.txt"
 }
 
@@ -56,25 +56,29 @@ if ($isccPath) {
 }
 
 # 3. Prepare complete source package (strict source-only filter, < 10 MB)
-$sourceStage = Join-Path $stageRoot "VRKA-4.0.0-source"
+$sourceStage = Join-Path $stageRoot "VRKA-4.0.1-source"
 New-Item -ItemType Directory -Path $sourceStage -Force | Out-Null
 
 $ignoreDirs = @(
     '.git', '.venv', '.venv-macos', 'build', 'dist', 'installer_output',
     'verification', 'performance', '.codex_patches', '__pycache__', '.test_tmp',
     'dmg_staging', 'outputs', 'target', 'VRKA-portable', 'ffmpeg_bin', 'source_archive',
-    '.release_stage_4_0_0', 'lab', '.pytest_cache'
+    'lab', '.pytest_cache'
 )
 $ignoreExtensions = @('.pyc', '.pyo', '.zip', '.exe', '.dll', '.pdb', '.lib', '.exp', '.har', '.dump', '.tar', '.gz')
 
 Get-ChildItem -Path $projectRoot -Recurse -File | ForEach-Object {
     $file = $_
+    if ($file.FullName.StartsWith($stageRoot, [System.StringComparison]::OrdinalIgnoreCase) -or
+        $file.FullName.StartsWith($outputRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return
+    }
     $relPath = $file.FullName.Substring($projectRoot.Length).TrimStart('\', '/')
     $parts = $relPath.Split([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
     $skip = $false
     if ($parts.Length -gt 1) {
         foreach ($part in $parts[0..($parts.Length - 2)]) {
-            if ($ignoreDirs -contains $part) {
+            if ($ignoreDirs -contains $part -or $part.StartsWith(".release_stage")) {
                 $skip = $true
                 break
             }

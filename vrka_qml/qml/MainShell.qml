@@ -180,7 +180,7 @@ ApplicationWindow {
                         }
 
                         Label {
-                            text: Bridge.activeCount > 0 ? "UPLINK ACTIVE" : (Bridge.queuedCount > 0 ? "UPLINK QUEUED" : "UPLINK READY")
+                            text: Bridge.activeCount > 0 ? "UPLINK ACTIVE" : (Bridge.queuedCount > 0 ? "UPLINK QUEUED" : "UPLINK LIVE")
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true
@@ -190,7 +190,7 @@ ApplicationWindow {
                         Item { Layout.fillWidth: true }
 
                         Label {
-                            text: "v4.0.0"
+                            text: "v" + APP_DISPLAY_VERSION
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true

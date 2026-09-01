@@ -1,6 +1,6 @@
-; VRKA 4.0.0 build 016 - Windows x64 installer (Inno Setup 6)
+; VRKA 4.0.1 build 017 - Windows x64 installer (Inno Setup 6)
 #define MyAppName "VRKA"
-#define MyAppVersion "4.0.0"
+#define MyAppVersion "4.0.1"
 #define MyAppPublisher "VRKA"
 #define MyAppExeName "VRKA.exe"
 
@@ -10,15 +10,15 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-VersionInfoVersion=4.0.0.16
+VersionInfoVersion=4.0.1.17
 DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 DisableProgramGroupPage=yes
 Compression=lzma2/ultra64
 SolidCompression=yes
-OutputDir=outputs\VRKA-4.0.0-build016-release
-OutputBaseFilename=VRKA-4.0.0-build016-setup-Windows-x64
+OutputDir=outputs\VRKA-4.0.1-build017-release
+OutputBaseFilename=VRKA-4.0.1-build017-setup-Windows-x64
 SetupIconFile=assets\branding\vrka.ico
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible

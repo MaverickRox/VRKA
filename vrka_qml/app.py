@@ -26,8 +26,8 @@ from .settings_state import SettingsState
 
 # Active VRKA 3.5 application identity (the frozen 3.0 / Build 011 metadata in
 # vrka_downloader.py, version_info.txt and the installer stays untouched).
-APP_DISPLAY_VERSION = "4.0.0"
-APP_BUILD = "016"
+APP_DISPLAY_VERSION = "4.0.1"
+APP_BUILD = "017"
 
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
     PROJECT_ROOT = Path(sys._MEIPASS)

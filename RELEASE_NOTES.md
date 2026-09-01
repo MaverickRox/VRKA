@@ -1,10 +1,21 @@
-# VRKA 4.0.0 Release Notes
+# VRKA Release Notes
 
-**Version**: 4.0.0 (Build 016)
+## VRKA 4.0.1 (Build 017)
+
+**Version**: 4.0.1 (Build 017)
+**Release Date**: 2026-09-01
 **Target Platform**: Windows 10/11 x64
 **License**: GPL-3.0-or-later
 
+### Highlights in 4.0.1
+- **UPLINK Status Reactive Synchronization**: Resolved an issue where the compact sidebar UPLINK status light and text remained stuck on `UPLINK QUEUED` (yellow) after task completion. The presentation bridge now connects model `dataChanged` and `layoutChanged` signals directly to reactive telemetry properties.
+- **Dynamic Version Headers**: Window title and Settings version badges dynamically reflect active build metadata (`4.0.1 Build 017`).
+- **Regression Test Coverage**: Added dedicated UPLINK state machine tests in `tests/test_uplink_state.py` validating queue transitions, task completions, failures, cancellations, and batch drains.
+- **Documentation & Screenshot Refresh**: Updated all product screenshots with real native captures demonstrating the verified `UPLINK LIVE` (green) idle state.
+
 ---
+
+## VRKA 4.0.0 (Build 016)
 
 ## What is VRKA?
 

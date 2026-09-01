@@ -770,7 +770,7 @@ ScrollView {
                         spacing: 2
 
                         Label {
-                            text: "VRKA Media Engine — Version 4.0.0"
+                            text: "VRKA Media Engine — Version " + APP_DISPLAY_VERSION
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.bodySize
                             font.bold: true

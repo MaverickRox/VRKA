@@ -11,7 +11,7 @@
   </p>
 
   <p>
-    <a href="https://github.com/MaverickRox/VRKA/releases/latest"><b>Download VRKA 4.0.0</b></a> •
+    <a href="https://github.com/MaverickRox/VRKA/releases/latest"><b>Download VRKA 4.0.1</b></a> •
     <a href="docs/USER_GUIDE.md">User Guide</a> •
     <a href="docs/ARCHITECTURE_OVERVIEW.md">Architecture</a> •
     <a href="https://github.com/MaverickRox/VRKA/issues/new/choose">Report Issue</a> •
@@ -27,16 +27,16 @@
 
 ---
 
-## Download VRKA 4.0.0
+## Download VRKA 4.0.1
 
-Get the official Windows release from [GitHub Releases (v4.0.0)](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0):
+Get the official Windows release from [GitHub Releases (v4.0.1)](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.1):
 
 | Package | Filename | Recommended For | Description |
 | :--- | :--- | :--- | :--- |
-| **[Windows Installer](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-setup-Windows-x64.exe` | Most Users | Standard setup wizard with Start Menu and Desktop shortcuts. |
-| **[Portable ZIP](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-portable-Windows-x64.zip` | USB / Portable | Standalone directory — extract anywhere and run `VRKA.exe`. |
-| **[Single-File Portable EXE](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-portable-Windows-x64.exe` | Lightweight Run | Single-file executable (~92 MB). Provisions managed runtime on first use. |
-| **[Complete Source Archive](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-complete-source.zip` | Developers | Complete buildable source distribution snapshot. |
+| **[Windows Installer](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.1)** | `VRKA-4.0.1-build017-setup-Windows-x64.exe` | Most Users | Standard setup wizard with Start Menu and Desktop shortcuts. |
+| **[Portable ZIP](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.1)** | `VRKA-4.0.1-build017-portable-Windows-x64.zip` | USB / Portable | Standalone directory — extract anywhere and run `VRKA.exe`. |
+| **[Single-File Portable EXE](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.1)** | `VRKA-4.0.1-build017-portable-Windows-x64.exe` | Lightweight Run | Single-file executable (~92 MB). Provisions managed runtime on first use. |
+| **[Complete Source Archive](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.1)** | `VRKA-4.0.1-build017-complete-source.zip` | Developers | Complete buildable source distribution snapshot. |
 
 > **No Manual FFmpeg Installation Required**:
 > VRKA is strictly PATH-independent. The single-file portable executable automatically provisions and cryptographically verifies a pinned external FFmpeg runtime in `%LOCALAPPDATA%\VRKA\runtime\` upon first video merge or audio extraction, and reuses it offline on subsequent runs. You do not need to install FFmpeg or set environment variables.
@@ -46,7 +46,7 @@ Get the official Windows release from [GitHub Releases (v4.0.0)](https://github.
 Every release provides a signed `SHA256SUMS.txt` manifest. Verify your download in PowerShell:
 
 ```powershell
-Get-FileHash .\VRKA-4.0.0-build016-setup-Windows-x64.exe -Algorithm SHA256
+Get-FileHash .\VRKA-4.0.1-build017-setup-Windows-x64.exe -Algorithm SHA256
 ```
 
 ---
@@ -107,13 +107,13 @@ VRKA is entirely self-contained, ad-free, and respects your privacy with zero ba
 
 ### Using the Setup Installer (Recommended)
 
-1. Download `VRKA-4.0.0-build016-setup-Windows-x64.exe` from [Releases](https://github.com/MaverickRox/VRKA/releases/latest).
+1. Download `VRKA-4.0.1-build017-setup-Windows-x64.exe` from [Releases](https://github.com/MaverickRox/VRKA/releases/latest).
 2. Run the installer and follow the setup steps.
 3. Launch VRKA from the Start Menu or Desktop shortcut.
 
 ### Using Portable Mode
 
-1. Download `VRKA-4.0.0-build016-portable-Windows-x64.zip`.
+1. Download `VRKA-4.0.1-build017-portable-Windows-x64.zip`.
 2. Extract the archive to any folder or USB drive.
 3. Run `VRKA.exe`. All settings are stored locally, and no administrative privileges are required.
 
@@ -143,6 +143,13 @@ pip install -r requirements.txt
 
 # Run the application
 python vrka_qml_app.py
+```
+
+### Running Tests
+
+```powershell
+# Run the test suite
+python -m unittest discover -s tests -v
 ```
 
 ### Compiling Standalone Binary

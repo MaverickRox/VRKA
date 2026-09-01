@@ -37,3 +37,6 @@ jobs:
 
       - name: Module import validation
         run: python -c "import vrka_downloader, vrka_core, vrka_qml; print('All core modules imported successfully.')"
+
+      - name: Run unit test suite
+        run: python -m unittest discover -s tests -v
