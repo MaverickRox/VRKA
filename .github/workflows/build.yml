@@ -54,7 +54,7 @@ jobs:
           choco install innosetup --no-progress -y
           & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" VRKA.iss
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: VRKA-3.5.0-Windows-x64
           path: installer_output/VRKA-3.5.0-setup-Windows-x64.exe
@@ -104,7 +104,7 @@ jobs:
           ln -s /Applications dmg_staging/Applications
           hdiutil create -volname "VRKA" -srcfolder dmg_staging -ov -format UDZO VRKA-2.0.0-build010-macOS-arm64.dmg
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: VRKA-2.0.0-build010-macOS-arm64
           path: VRKA-2.0.0-build010-macOS-arm64.dmg
