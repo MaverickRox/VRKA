@@ -1,25 +1,45 @@
-# VRKA
+<div align="center">
+  <img src="assets/branding/vrka-wolf-256.png" width="96" height="96" alt="VRKA Logo" />
+  <h1>VRKA</h1>
+  <p><strong>A modern, lightweight desktop media downloader for Windows.</strong></p>
 
-**A modern, lightweight desktop media downloader for Windows.**
+  <p>
+    <a href="https://github.com/MaverickRox/VRKA/releases/latest"><img src="https://img.shields.io/github/v/release/MaverickRox/VRKA?style=flat-square&color=6366f1" alt="Release" /></a>
+    <a href="https://github.com/MaverickRox/VRKA/releases"><img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011%20x64-blue?style=flat-square" alt="Platform" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-green?style=flat-square" alt="License" /></a>
+    <a href="https://github.com/MaverickRox/VRKA/issues"><img src="https://img.shields.io/github/issues/MaverickRox/VRKA?style=flat-square" alt="Issues" /></a>
+  </p>
 
-[![Release](https://img.shields.io/github/v/release/MaverickRox/VRKA?style=flat-square)](https://github.com/MaverickRox/VRKA/releases/latest)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011%20x64-blue?style=flat-square)](https://github.com/MaverickRox/VRKA/releases)
-[![License](https://img.shields.io/badge/license-GPL--3.0--or--later-green?style=flat-square)](LICENSE)
-[![Issues](https://img.shields.io/github/issues/MaverickRox/VRKA?style=flat-square)](https://github.com/MaverickRox/VRKA/issues)
+  <p>
+    <a href="https://github.com/MaverickRox/VRKA/releases/latest"><b>Download VRKA 4.0.0</b></a> •
+    <a href="docs/USER_GUIDE.md">User Guide</a> •
+    <a href="docs/ARCHITECTURE_OVERVIEW.md">Architecture</a> •
+    <a href="https://github.com/MaverickRox/VRKA/issues/new/choose">Report Issue</a> •
+    <a href="SECURITY.md">Security</a>
+  </p>
+</div>
 
-[Download Latest Release](https://github.com/MaverickRox/VRKA/releases/latest) • [User Guide](docs/USER_GUIDE.md) • [Report an Issue](https://github.com/MaverickRox/VRKA/issues/new/choose) • [Security](SECURITY.md)
+<br />
+
+<div align="center">
+  <img src="docs/images/vrka-main.png" alt="VRKA Main Interface" width="900" />
+</div>
 
 ---
 
-## Download
+## Download VRKA 4.0.0
 
-Get the official Windows release from [GitHub Releases](https://github.com/MaverickRox/VRKA/releases/latest):
+Get the official Windows release from [GitHub Releases (v4.0.0)](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0):
 
-| Package | Recommended For | Description |
-| :--- | :--- | :--- |
-| **[Windows Installer](https://github.com/MaverickRox/VRKA/releases/latest)** *(Recommended)* | Most Users | Standard setup wizard with Desktop shortcuts and automatic file associations. |
-| **[Portable ZIP](https://github.com/MaverickRox/VRKA/releases/latest)** | USB / Custom Installs | Standalone folder containing the application and dependencies. No installation required. |
-| **[Portable Executable](https://github.com/MaverickRox/VRKA/releases/latest)** | Quick Runs | Single-file executable. Just download and run. |
+| Package | Filename | Recommended For | Description |
+| :--- | :--- | :--- | :--- |
+| **[Windows Installer](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-setup-Windows-x64.exe` | Most Users | Standard setup wizard with Start Menu and Desktop shortcuts. |
+| **[Portable ZIP](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-portable-Windows-x64.zip` | USB / Portable | Standalone directory — extract anywhere and run `VRKA.exe`. |
+| **[Single-File Portable EXE](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-portable-Windows-x64.exe` | Lightweight Run | Single-file executable (~92 MB). Provisions managed runtime on first use. |
+| **[Complete Source Archive](https://github.com/MaverickRox/VRKA/releases/tag/v4.0.0)** | `VRKA-4.0.0-build016-complete-source.zip` | Developers | Complete buildable source distribution snapshot. |
+
+> **No Manual FFmpeg Installation Required**:
+> VRKA is strictly PATH-independent. The single-file portable executable automatically provisions and cryptographically verifies a pinned external FFmpeg runtime in `%LOCALAPPDATA%\VRKA\runtime\` upon first video merge or audio extraction, and reuses it offline on subsequent runs. You do not need to install FFmpeg or set environment variables.
 
 ### Verifying Checksums
 
@@ -49,6 +69,37 @@ VRKA is entirely self-contained, ad-free, and respects your privacy with zero ba
 - **Managed Runtime Updater**: Check for official yt-dlp engine updates in-app, verify cryptographic checksums automatically, and roll back instantly if needed.
 - **Selectable Activity Log**: Real-time download console supporting text selection, `Ctrl+A` select all, and `Ctrl+C` copying.
 - **Privacy & Security by Design**: No telemetry, no persistent user tracking, automatic redaction of cookies and session tokens from logs, and strict respect for Digital Rights Management (DRM).
+
+---
+
+## User Interface Tour
+
+<details open>
+<summary><b>Task Queue & Execution Pipeline</b></summary>
+<br />
+<div align="center">
+  <img src="docs/images/vrka-queue.png" alt="VRKA Task Queue" width="850" />
+  <p><i>Real-time task monitoring with multi-line activity logging, progress metrics, and state management.</i></p>
+</div>
+</details>
+
+<details>
+<summary><b>Completed Downloads History</b></summary>
+<br />
+<div align="center">
+  <img src="docs/images/vrka-history.png" alt="VRKA Completed Downloads History" width="850" />
+  <p><i>Archived transfer history with direct file reveal, instant re-download prefill, and search.</i></p>
+</div>
+</details>
+
+<details>
+<summary><b>Engine Runtime & Configuration</b></summary>
+<br />
+<div align="center">
+  <img src="docs/images/vrka-settings.png" alt="VRKA Engine Runtime and Settings" width="850" />
+  <p><i>In-app engine updates with rollback protection, authentication session management, and proxy configuration.</i></p>
+</div>
+</details>
 
 ---
 
