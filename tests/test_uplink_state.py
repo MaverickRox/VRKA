@@ -38,15 +38,15 @@ class TestUplinkStateMachine(unittest.TestCase):
         elif self.bridge.queuedCount > 0:
             return "UPLINK QUEUED"
         else:
-            return "UPLINK LIVE"
+            return "UPLINK READY"
 
     def test_initial_state_is_live(self):
-        """A. Fresh launch -> UPLINK LIVE."""
+        """A. Fresh launch -> UPLINK READY."""
         self.assertEqual(self.bridge.taskCount, 0)
         self.assertEqual(self.bridge.queuedCount, 0)
         self.assertEqual(self.bridge.activeCount, 0)
         self.assertEqual(self.bridge.completedCount, 0)
-        self.assertEqual(self._get_uplink_state(), "UPLINK LIVE")
+        self.assertEqual(self._get_uplink_state(), "UPLINK READY")
 
     def test_single_task_lifecycle_returns_to_live(self):
         """B, C, D: Queued -> Active -> Completed transitions correctly to LIVE."""
@@ -67,13 +67,13 @@ class TestUplinkStateMachine(unittest.TestCase):
         self.assertEqual(self.bridge.queuedCount, 0)
         self.assertEqual(self.bridge.activeCount, 0)
         self.assertEqual(self.bridge.completedCount, 1)
-        self.assertEqual(self._get_uplink_state(), "UPLINK LIVE")
+        self.assertEqual(self._get_uplink_state(), "UPLINK READY")
 
         # Verify signals were emitted on each state transition
         self.assertGreaterEqual(len(self.signal_events), 3)
 
     def test_failed_task_returns_to_live(self):
-        """E. Task fails -> UPLINK LIVE."""
+        """E. Task fails -> UPLINK READY."""
         self.bridge.tasks.upsert("task-1", status="queued")
         self.assertEqual(self._get_uplink_state(), "UPLINK QUEUED")
 
@@ -83,17 +83,17 @@ class TestUplinkStateMachine(unittest.TestCase):
         self.bridge.tasks.upsert("task-1", status="error")
         self.assertEqual(self.bridge.queuedCount, 0)
         self.assertEqual(self.bridge.activeCount, 0)
-        self.assertEqual(self._get_uplink_state(), "UPLINK LIVE")
+        self.assertEqual(self._get_uplink_state(), "UPLINK READY")
 
     def test_canceled_task_returns_to_live(self):
-        """F. Task canceled -> UPLINK LIVE."""
+        """F. Task canceled -> UPLINK READY."""
         self.bridge.tasks.upsert("task-1", status="queued")
         self.assertEqual(self._get_uplink_state(), "UPLINK QUEUED")
 
         self.bridge.tasks.upsert("task-1", status="canceled")
         self.assertEqual(self.bridge.queuedCount, 0)
         self.assertEqual(self.bridge.activeCount, 0)
-        self.assertEqual(self._get_uplink_state(), "UPLINK LIVE")
+        self.assertEqual(self._get_uplink_state(), "UPLINK READY")
 
     def test_multiple_tasks_remain_queued(self):
         """G, H. First task completes while second remains queued -> UPLINK QUEUED."""
@@ -124,7 +124,7 @@ class TestUplinkStateMachine(unittest.TestCase):
         self.bridge.tasks.upsert("task-2", status="completed")
         self.assertEqual(self.bridge.queuedCount, 0)
         self.assertEqual(self.bridge.activeCount, 0)
-        self.assertEqual(self._get_uplink_state(), "UPLINK LIVE")
+        self.assertEqual(self._get_uplink_state(), "UPLINK READY")
 
     def test_queue_drain_event_batching(self):
         """I. Processing queue event batches correctly drives UPLINK transitions."""
@@ -148,7 +148,7 @@ class TestUplinkStateMachine(unittest.TestCase):
         self.assertEqual(self.bridge.activeCount, 0)
         self.assertEqual(self.bridge.queuedCount, 0)
         self.assertEqual(self.bridge.completedCount, 1)
-        self.assertEqual(self._get_uplink_state(), "UPLINK LIVE")
+        self.assertEqual(self._get_uplink_state(), "UPLINK READY")
 
 
 if __name__ == "__main__":

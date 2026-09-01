@@ -168,7 +168,7 @@ ScrollView {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.sectionTitleSize
                             font.bold: true
-                            color: Bridge.activeCount > 0 ? Theme.success : Theme.text
+                            color: Bridge.activeCount > 0 ? Theme.accentHover : Theme.text
                         }
 
                         Label {
@@ -176,7 +176,7 @@ ScrollView {
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true
-                            color: Bridge.activeCount > 0 ? Theme.success : Theme.textDim
+                            color: Bridge.activeCount > 0 ? Theme.accentHover : Theme.textDim
                         }
                     }
                 }

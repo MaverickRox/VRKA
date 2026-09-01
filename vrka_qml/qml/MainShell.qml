@@ -176,15 +176,15 @@ ApplicationWindow {
                             width: 8
                             height: 8
                             radius: 4
-                            color: Bridge.activeCount > 0 ? Theme.success : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
+                            color: Bridge.activeCount > 0 ? Theme.accentHover : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
                         }
 
                         Label {
-                            text: Bridge.activeCount > 0 ? "UPLINK ACTIVE" : (Bridge.queuedCount > 0 ? "UPLINK QUEUED" : "UPLINK LIVE")
+                            text: Bridge.activeCount > 0 ? "UPLINK ACTIVE" : (Bridge.queuedCount > 0 ? "UPLINK QUEUED" : "UPLINK READY")
                             font.family: Theme.fontFamily
                             font.pixelSize: Theme.microSize
                             font.bold: true
-                            color: Bridge.activeCount > 0 ? Theme.success : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
+                            color: Bridge.activeCount > 0 ? Theme.accentHover : (Bridge.queuedCount > 0 ? Theme.warning : Theme.success)
                         }
 
                         Item { Layout.fillWidth: true }
@@ -239,14 +239,14 @@ ApplicationWindow {
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Theme.smallSize
                                 font.bold: true
-                                color: Bridge.activeCount > 0 ? Theme.success : Theme.text
+                                color: Bridge.activeCount > 0 ? Theme.accentHover : Theme.text
                             }
                             Label {
                                 text: "ACTIVE"
                                 font.family: Theme.fontFamily
                                 font.pixelSize: Theme.microSize
                                 font.bold: true
-                                color: Bridge.activeCount > 0 ? Theme.success : Theme.textDim
+                                color: Bridge.activeCount > 0 ? Theme.accentHover : Theme.textDim
                             }
                         }
 
