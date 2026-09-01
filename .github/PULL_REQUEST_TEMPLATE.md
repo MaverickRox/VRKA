@@ -1,27 +1,27 @@
 ## Summary
 
-## Related issue
+## Related Issue
 
 Closes #
 
-## Changes
+## Changes Proposed
 
-## Tests
+## Quality & Integrity Checks
 
-- [ ] Existing tests pass
-- [ ] New/changed behavior has focused tests
-- [ ] Windows behavior was checked
-- [ ] Cancellation/shutdown impact was checked
-- [ ] Documentation was updated
+- [ ] Code compiles without errors (`python -m compileall -q .`)
+- [ ] Core modules import cleanly (`python -c "import vrka_downloader, vrka_core, vrka_qml"`)
+- [ ] Tested on Windows 10/11 x64
+- [ ] Graceful shutdown and cancellation verified
+- [ ] Documentation updated if relevant
 
-## Security and privacy
+## Security & Privacy Checklist
 
-- [ ] No secrets, cookies, signed URLs, private media, or personal paths
-- [ ] No shell-command construction from untrusted input
-- [ ] No hidden telemetry
-- [ ] No DRM circumvention
-- [ ] Third-party licences/notices updated when required
+- [ ] Zero secrets, tokens, cookies, or signed URLs included
+- [ ] No machine-specific or personal filesystem paths
+- [ ] No hidden telemetry or tracking
+- [ ] Full compliance with DRM non-circumvention policies
+- [ ] Third-party notices and licenses updated if dependencies changed
 
-## Screenshots
+## Screenshots (UI changes only)
 
-For UI changes only. Use sanitized, non-copyrighted demo content.
+For UI changes, attach sanitized screenshots demonstrating the updated interface.

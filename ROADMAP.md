@@ -1,28 +1,30 @@
-# Roadmap
+# Project Roadmap
 
-## Current public baseline
+This document outlines planned improvements and future directions for VRKA.
 
-VRKA 2.0.0 build008 is the first public Windows release.
+---
 
-## Next major reliability work
+## Current Release (v4.0.0)
+- Native Qt 6 QML desktop interface with Day/Night theme toggle.
+- Single-worker FIFO task queue with persistent `tasks.json` storage and state recovery.
+- Automated passive Browser Fallback powered by uBlock Origin Lite content protection.
+- In-app yt-dlp runtime manager with SHA-256 validation and instant rollback.
+- High-fidelity audio extraction supporting MP3, WAV, and FLAC formats.
 
-Planned areas:
+---
 
-- Browser Fallback 2.0;
-- stronger popup, popunder, and redirect protection;
-- same-job browser-to-downloader handoff;
-- candidate lifecycle, deduplication, stabilization, and ranking;
-- pre-roll/advertisement avoidance;
-- improved task persistence and recovery;
-- cancellation validation across every phase;
-- startup/runtime packaging improvements;
-- expanded deterministic and physical regression testing.
+## Planned Enhancements
 
-## Later
+### User Interface & Experience
+- Custom output template builder for flexible naming patterns.
+- Expanded localization and multi-language interface translations.
+- Enhanced speed graphing and visual bandwidth throttling controls.
 
-- further package-size optimization after functionality is stable;
-- broader platform work only after Windows behavior is proven;
-- code signing if sustainable;
-- community-requested features that fit the privacy and safety model.
+### Downloader & Engine
+- Fine-grained segment connection limits for high-bandwidth connections.
+- Extended subtitle styling options and multi-track audio stream extraction.
+- Automatic retry tuning with exponential backoff on intermittent network drops.
 
-The roadmap is directional, not a promise of dates or specific implementation.
+### Packaging & Infrastructure
+- Automated reproducible build verification.
+- Code signing integration as project funding permits.

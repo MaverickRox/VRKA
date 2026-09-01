@@ -1,51 +1,21 @@
-# Release process
+# Release Process
 
-## 1. Stabilize
+This document outlines the release verification and packaging procedures for VRKA.
 
-- freeze feature work;
-- update tests and docs;
-- pin/record dependencies;
-- verify third-party licences;
-- run secret/path scans.
+---
 
-## 2. Validate
+## Pre-Release Checklist
 
-- tests;
-- dependency check;
-- installer/portable launch;
-- media matrix;
-- cancellation/shutdown;
-- updater/rollback;
-- clean user-data behavior;
-- uninstall cleanup.
+1. **Code Quality & Syntax**: Verify that all Python files compile cleanly without errors (`python -m compileall -q .`).
+2. **Branding & Versioning**: Confirm version metadata in `version_info.txt`, `VRKA-4.0.iss`, `pyproject.toml`, and QML files.
+3. **Security Audit**: Ensure no temporary test profiles, API keys, personal credentials, or local paths are present in source files.
+4. **Build Packaging**: Generate standalone binary with PyInstaller and compile Windows installer with Inno Setup.
+5. **Checksum Generation**: Produce cryptographic SHA-256 hashes for all output packages in `SHA256SUMS.txt`.
 
-## 3. Package
+---
 
-- build executable;
-- build installer;
-- build portable ZIP;
-- prepare clean source ZIP;
-- prepare validation report;
-- collect third-party notices.
+## Publishing Releases
 
-## 4. Hash
-
-Generate `SHA256SUMS.txt` only after every asset is final.
-
-## 5. Commit and tag
-
-Commit documentation and source. Record the clean commit. Create an annotated immutable tag.
-
-## 6. Draft release
-
-Use accurate notes, known limitations, and exact asset names.
-
-## 7. Verify draft assets
-
-Download every draft asset, hash it, launch it, then publish.
-
-## 8. Post-release
-
-Test signed-out access, installer, portable mode, issue forms, links, and uninstall.
-
-Never replace an existing release binary without changing the version/tag.
+- Create a signed Git tag (`v4.0.0`).
+- Create a GitHub Release with detailed user-facing notes and attached binary packages.
+- Verify asset hashes against `SHA256SUMS.txt`.

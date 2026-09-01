@@ -12,7 +12,7 @@ body:
     id: version
     attributes:
       label: VRKA version
-      placeholder: "2.0.0 build008"
+      placeholder: "4.0.0 (Build 016)"
     validations:
       required: true
   - type: dropdown

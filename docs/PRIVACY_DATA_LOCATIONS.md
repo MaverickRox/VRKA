@@ -1,13 +1,21 @@
-# Local data locations
+# Local Data Locations & Storage
 
-Build008 can use the following Windows locations:
+VRKA operates strictly on your local computer. It does not send data to remote servers or cloud accounts.
 
-- `%USERPROFILE%\.vrka` — settings/history and related local state
-- `%LOCALAPPDATA%\VRKA\runtime` — managed yt-dlp runtime
-- `%LOCALAPPDATA%\VRKA\browser-session` — temporary browser verification data
-- selected output directory — user downloads
-- temporary staging directories — partial downloads and processing files
+---
 
-Before filing a bug or publishing a diagnostic archive, inspect these locations and remove cookies, tokens, private titles, and personal paths.
+## Windows Data Locations
 
-Uninstalling the application may not remove user-generated downloads or every local settings/history file. Delete them manually when complete removal is desired.
+| Location | Purpose |
+| :--- | :--- |
+| `%USERPROFILE%\.vrka\` | Local configuration, user preferences, and task history (`tasks.json`). |
+| `%LOCALAPPDATA%\VRKA\runtime\` | Managed yt-dlp engine updates and runtime components. |
+| `%LOCALAPPDATA%\VRKA\browser-session\` | Temporary isolated session storage for Browser Fallback (cleared upon completion). |
+| User-Selected Download Directory | Destination folder where completed media files are saved. |
+
+---
+
+## Data Removal
+To completely remove all VRKA configuration and history:
+1. Uninstall VRKA via Windows Settings or delete the portable directory.
+2. Delete the `%USERPROFILE%\.vrka` and `%LOCALAPPDATA%\VRKA` directories from your system.

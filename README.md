@@ -1,53 +1,69 @@
 # VRKA
 
-**Lightweight, resilient desktop media downloader for Windows.**
+**A modern, lightweight desktop media downloader for Windows.**
 
-[![Release](https://img.shields.io/github/v/release/MaverickRox/VRKA?include_prereleases&style=flat-square)](https://github.com/MaverickRox/VRKA/releases/latest)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11%20x64-blue?style=flat-square)](https://github.com/MaverickRox/VRKA/releases)
+[![Release](https://img.shields.io/github/v/release/MaverickRox/VRKA?style=flat-square)](https://github.com/MaverickRox/VRKA/releases/latest)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011%20x64-blue?style=flat-square)](https://github.com/MaverickRox/VRKA/releases)
 [![License](https://img.shields.io/badge/license-GPL--3.0--or--later-green?style=flat-square)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue?style=flat-square)](https://www.python.org/)
+[![Issues](https://img.shields.io/github/issues/MaverickRox/VRKA?style=flat-square)](https://github.com/MaverickRox/VRKA/issues)
 
-[Download Latest Release](https://github.com/MaverickRox/VRKA/releases/latest) • [Report Issue](https://github.com/MaverickRox/VRKA/issues/new/choose) • [Documentation](docs/)
-
----
-
-## Overview
-
-VRKA is an open-source, desktop media downloader designed for single-stream and batch downloads on Windows 10 and 11 (x64). Built with a native **Qt 6 QML** interface and a Python backend, VRKA combines direct extraction via [yt-dlp](https://github.com/yt-dlp/yt-dlp) with an automated, passive **Browser Fallback** subsystem powered by uBlock Origin Lite.
-
-VRKA operates strictly on user demand with **zero telemetry**, no background services, redacted secret handling, and full respect for DRM.
+[Download Latest Release](https://github.com/MaverickRox/VRKA/releases/latest) • [User Guide](docs/USER_GUIDE.md) • [Report an Issue](https://github.com/MaverickRox/VRKA/issues/new/choose) • [Security](SECURITY.md)
 
 ---
 
-## Key Features
+## Download
 
-- **Modern Qt 6 QML Interface**: High-performance, responsive UI featuring real-time download status, multi-line selectable activity logs (with `Ctrl+A` / `Ctrl+C` support), and an animated compact Day/Night theme toggle.
-- **Strict FIFO Task Queue & Persistence**: One immutable task record per job, ensuring deterministic ordering, atomic state machine transitions, and state recovery upon application restart.
-- **Automated Browser Fallback**: When direct extractor attempts encounter Cloudflare or complex media players, VRKA seamlessly launches an isolated, content-filtered WebView2 session to observe media streams (HLS master manifests, DASH, direct MP4) and hands them off to the downloader.
-- **Managed yt-dlp Runtime Updater**: Built-in runtime manager in `%LOCALAPPDATA%\VRKA\runtime` that can check for official yt-dlp updates, verify SHA-256 signatures, and fall back to the bundled frozen engine with one-click rollback.
-- **Precise Audio Extraction**: Supports MP3 (320, 256, 192, 128 kbps), WAV (uncompressed), and FLAC audio transcoding with accurate codec metadata.
-- **Privacy & Security by Design**: No telemetry, no persistent tracking, automatic redaction of cookies and session tokens in logs, and DRM non-circumvention by design.
+Get the official Windows release from [GitHub Releases](https://github.com/MaverickRox/VRKA/releases/latest):
 
----
-
-## Quick Start (Windows)
-
-### Installation Options
-
-1. **Installer (Recommended)**:
-   - Download `VRKA-4.0.0-build016-setup-Windows-x64.exe` from [Releases](https://github.com/MaverickRox/VRKA/releases/latest).
-   - Run the setup wizard to install VRKA and create a Start Menu / Desktop shortcut.
-
-2. **Portable Version**:
-   - Download `VRKA-4.0.0-build016-portable-Windows-x64.zip` or the standalone `VRKA-4.0.0-build016-portable-Windows-x64.exe`.
-   - Extract and run `VRKA.exe` directly. No administrative rights or Python installation required.
+| Package | Recommended For | Description |
+| :--- | :--- | :--- |
+| **[Windows Installer](https://github.com/MaverickRox/VRKA/releases/latest)** *(Recommended)* | Most Users | Standard setup wizard with Desktop shortcuts and automatic file associations. |
+| **[Portable ZIP](https://github.com/MaverickRox/VRKA/releases/latest)** | USB / Custom Installs | Standalone folder containing the application and dependencies. No installation required. |
+| **[Portable Executable](https://github.com/MaverickRox/VRKA/releases/latest)** | Quick Runs | Single-file executable. Just download and run. |
 
 ### Verifying Checksums
 
-Verify the integrity of downloaded binaries against `SHA256SUMS.txt`:
+Every release provides a signed `SHA256SUMS.txt` manifest. Verify your download in PowerShell:
+
 ```powershell
 Get-FileHash .\VRKA-4.0.0-build016-setup-Windows-x64.exe -Algorithm SHA256
 ```
+
+---
+
+## What is VRKA?
+
+VRKA is a clean, desktop media downloader designed for single-stream and batch downloads on Windows 10 and 11. Built with a native **Qt 6 QML** interface and a Python backend, VRKA combines direct media extraction powered by [yt-dlp](https://github.com/yt-dlp/yt-dlp) with an automated, passive **Browser Fallback** subsystem for sites that require browser-assisted stream observation.
+
+VRKA is entirely self-contained, ad-free, and respects your privacy with zero background services and zero telemetry.
+
+---
+
+## Features
+
+- **Responsive Qt 6 QML Interface**: Hardware-accelerated UI with fluid animations, adaptive high-DPI scaling, and an integrated Day/Night theme toggle.
+- **Durable Task Queue**: Reliable single-worker FIFO scheduling with persistent state storage—downloads resume cleanly across application restarts.
+- **Audio Extraction & Transcoding**: Extract high-fidelity audio in MP3 (320, 256, 192, 128 kbps), WAV (uncompressed PCM), or FLAC formats.
+- **Passive Browser Fallback**: When direct extractor attempts are blocked by web challenges or complex player scripts, an isolated WebView2 session passively detects and captures media streams (HLS master manifests, DASH, and direct MP4) with built-in uBlock Origin Lite content protection.
+- **Managed Runtime Updater**: Check for official yt-dlp engine updates in-app, verify cryptographic checksums automatically, and roll back instantly if needed.
+- **Selectable Activity Log**: Real-time download console supporting text selection, `Ctrl+A` select all, and `Ctrl+C` copying.
+- **Privacy & Security by Design**: No telemetry, no persistent user tracking, automatic redaction of cookies and session tokens from logs, and strict respect for Digital Rights Management (DRM).
+
+---
+
+## Installation
+
+### Using the Setup Installer (Recommended)
+
+1. Download `VRKA-4.0.0-build016-setup-Windows-x64.exe` from [Releases](https://github.com/MaverickRox/VRKA/releases/latest).
+2. Run the installer and follow the setup steps.
+3. Launch VRKA from the Start Menu or Desktop shortcut.
+
+### Using Portable Mode
+
+1. Download `VRKA-4.0.0-build016-portable-Windows-x64.zip`.
+2. Extract the archive to any folder or USB drive.
+3. Run `VRKA.exe`. All settings are stored locally, and no administrative privileges are required.
 
 ---
 
@@ -55,73 +71,78 @@ Get-FileHash .\VRKA-4.0.0-build016-setup-Windows-x64.exe -Algorithm SHA256
 
 ### Prerequisites
 
-- Windows 10/11 x64
+- Windows 10 / 11 x64
 - Python 3.10, 3.11, or 3.12
 - Git
 
-### Setup & Execution
+### Setup & Run
 
 ```powershell
 # Clone the repository
 git clone https://github.com/MaverickRox/VRKA.git
 cd VRKA
 
-# Create and activate a virtual environment
+# Set up an isolated virtual environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
-# Install required dependencies
+# Install project dependencies
 pip install -r requirements.txt
 
-# Launch VRKA
+# Run the application
 python vrka_qml_app.py
 ```
 
-### Running Tests
+### Compiling Standalone Binary
 
 ```powershell
-python -m unittest discover -s tests -p "test_*.py"
-```
-
-### Compiling Standalone Executable
-
-```powershell
+# Build standalone VRKA.exe with PyInstaller
 pip install pyinstaller
 pyinstaller VRKA-Windows.spec
 ```
 
 ---
 
-## Project Structure
+## Privacy & Security
 
-```text
-VRKA/
-├── assets/                 # Wolf branding icons, Space Mono fonts, uBOL extension
-├── docs/                   # Architecture, build, compliance, and user guides
-├── tests/                  # Full automated regression & unit test suite
-├── tools/                  # Build pipeline, packaging scripts, test runners
-├── vrka_core/              # Core domain: scheduler, state machine, browser fallback
-├── vrka_qml/               # Qt 6 QML interface, models, and controllers
-├── vrka_downloader.py      # Authoritative backend engine & helper dispatch
-├── vrka_qml_app.py         # Top-level desktop entrypoint
-├── requirements.txt        # Python dependency manifest
-├── VRKA-Windows.spec       # PyInstaller packaging specification
-├── VRKA-4.0.iss            # Inno Setup installer script
-└── LICENSE                 # GNU General Public License v3.0
-```
+VRKA is built on principles of user privacy and transparency:
+- **Zero Telemetry**: VRKA does not collect, transmit, or monetize any analytics, metrics, or personal data.
+- **Local Operation**: All task databases, settings, and temporary files remain strictly on your local machine (`%USERPROFILE%\.vrka`).
+- **Redacted Logging**: Authentication cookies, session tokens, and sensitive URL query parameters are automatically redacted from activity logs.
+- **DRM Non-Circumvention**: VRKA does not bypass Widevine, FairPlay, PlayReady, or any Digital Rights Management systems.
+
+For full details, read [PRIVACY.md](PRIVACY.md) and [SECURITY.md](SECURITY.md).
 
 ---
 
-## Security & Responsible Use
+## Responsible Use
 
-VRKA is intended for downloading user-authorized content, personal archiving, and accessing openly available media.
-- **DRM Policy**: VRKA does not bypass Widevine, FairPlay, PlayReady, or any Digital Rights Management systems. If DRM is detected on a media candidate, the task terminates immediately with a clear explanation.
-- **Privacy**: No telemetry, analytics, or remote beacons are embedded. Cookie values and access tokens are never logged.
-- **Reporting Vulnerabilities**: See [SECURITY.md](SECURITY.md) for vulnerability disclosure procedures.
+VRKA is intended for downloading user-authorized content, creative commons media, personal recordings, and openly accessible streams. Users are responsible for complying with applicable copyright laws and the terms of service of the content platforms they access.
+
+For more information, see [DISCLAIMER.md](DISCLAIMER.md).
+
+---
+
+## Documentation
+
+- [User Guide](docs/USER_GUIDE.md) — Comprehensive guide to downloading, formats, and settings.
+- [Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md) — Overview of the Qt Quick frontend and Python backend design.
+- [Building from Source](docs/BUILD_FROM_SOURCE.md) — In-depth guide for building and packaging VRKA on Windows.
+- [Troubleshooting](docs/TROUBLESHOOTING.md) — Solutions to common issues and network configuration questions.
+- [FFmpeg Compliance](docs/FFMPEG_COMPLIANCE.md) — Notes on media toolchain integration.
+
+---
+
+## Support & Contributing
+
+- **Questions & Troubleshooting**: Check the [User Guide](docs/USER_GUIDE.md) or open a discussion in [Support](SUPPORT.md).
+- **Bug Reports & Feature Requests**: Submit an issue via [GitHub Issues](https://github.com/MaverickRox/VRKA/issues/new/choose).
+- **Contributing**: Contributions and code improvements are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ---
 
 ## License
 
 VRKA is licensed under the [GNU General Public License v3.0 or later (GPL-3.0-or-later)](LICENSE).
-Third-party component notices and licenses are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Third-party dependencies and their respective licenses are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [LICENSES/](LICENSES/) directory.

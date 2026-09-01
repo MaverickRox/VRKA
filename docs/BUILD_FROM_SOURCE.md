@@ -1,76 +1,65 @@
-# Build VRKA build016 from source
+# Building VRKA from Source
 
-These instructions target Windows 10/11 x64.
+This guide provides instructions for building and running VRKA on Windows 10 and 11 (x64).
 
-## Requirements
+---
 
-- Python 3.12 or 3.13
-- Git
-- FFmpeg and FFprobe
-- Deno for current yt-dlp YouTube challenge solving
-- PyInstaller
-- Inno Setup for the installer
+## Prerequisites
 
-Use the exact versions recorded for the release when reproducing build016.
+- **Operating System**: Windows 10 or 11 (x64)
+- **Python**: Version 3.10, 3.11, or 3.12 (64-bit)
+- **Git**: For source version control
+- **FFmpeg & FFprobe**: Required for media muxing and audio conversion
+- **Inno Setup 6** *(Optional)*: Required only if compiling the Windows setup installer
 
-## Create an environment
+---
+
+## Step 1: Clone the Repository
 
 ```powershell
-py -3.13 -m venv .venv
+git clone https://github.com/MaverickRox/VRKA.git
+cd VRKA
+```
+
+---
+
+## Step 2: Set Up Virtual Environment
+
+```powershell
+# Create an isolated Python virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
 .\.venv\Scripts\Activate.ps1
+
+# Upgrade pip and install dependencies
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-python -m pip check
 ```
 
-If the source snapshot has no complete lock file, reconstruct the exact release environment from the preserved validation/dependency inventory before claiming a reproducible build.
+---
 
-## Run from source
-
-Ensure FFmpeg/FFprobe are on PATH or in the expected `ffmpeg_bin` folder.
+## Step 3: Run the Application
 
 ```powershell
-python vrka_downloader.py
+python vrka_qml_app.py
 ```
 
-## Tests
+---
 
-For the build016 source layout:
+## Step 4: Compiling Executable Packages
 
-```powershell
-python -m unittest -v test_vrka.py test_vrka_20.py test_release_rework.py
-```
-
-If the repository uses a wrapper script, prefer the documented wrapper. Do not silently skip failing tests.
-
-## Build the Windows executable
-
-Prefer the preserved PyInstaller spec:
+### Building Standalone Executable
+To compile the standalone `dist\VRKA.exe` binary with PyInstaller:
 
 ```powershell
+pip install pyinstaller
 pyinstaller --clean --noconfirm VRKA-Windows.spec
 ```
 
-If the exact build016 spec has a different filename, use that file and update this document.
-
-## Build the installer
+### Building Full Installer
+If you have Inno Setup 6 installed, run the build script:
 
 ```powershell
-& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" VRKA.iss
+powershell -ExecutionPolicy Bypass -File .\build_windows.ps1
 ```
-
-Verify the exact installer output name and metadata.
-
-## Release verification
-
-- run from a clean folder;
-- test installer and portable modes;
-- verify icon/title/version;
-- run the media acceptance matrix;
-- test Cancel and shutdown;
-- inspect process cleanup;
-- run a secret scan;
-- generate SHA-256 hashes;
-- record exact dependency versions and FFmpeg configuration.
-
-See `docs/RELEASE_PROCESS.md`.

@@ -1,13 +1,7 @@
 # Maintainers
 
-## Primary maintainer
+VRKA is maintained by:
 
-- MVRK — project direction, Windows releases, review, and security coordination
+- **MVRK** ([@MaverickRox](https://github.com/MaverickRox))
 
-## Maintainer policy
-
-Commit access is granted conservatively. External contributions are accepted through pull requests.
-
-Release tags and published binaries must be created or approved by the primary maintainer.
-
-Security reports should use GitHub private vulnerability reporting.
+For security disclosures, please use [GitHub Security Advisories](https://github.com/MaverickRox/VRKA/security/advisories/new).

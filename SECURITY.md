@@ -17,7 +17,7 @@ We take the security and privacy of VRKA seriously. If you discover a potential 
 2. Click **Report a vulnerability**.
 3. Provide a clear explanation of the issue, steps to reproduce, and any relevant logs (with personal data redacted).
 
-Alternatively, you may contact the maintainer at `mavroxx@protonmail.com`.
+Alternatively, you may contact the maintainer at [GitHub Security Advisories](https://github.com/MaverickRox/VRKA/security/advisories/new).
 
 Please allow up to 48 hours for initial triage before public disclosure.
 

@@ -1,8 +1,8 @@
 # UTF-8
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(3, 5, 0, 12),
-    prodvers=(3, 5, 0, 12),
+    filevers=(4, 0, 0, 16),
+    prodvers=(4, 0, 0, 16),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -14,14 +14,14 @@ VSVersionInfo(
     StringFileInfo([
       StringTable(
         '040904B0',
-        [StringStruct('CompanyName', 'MVRK'),
-         StringStruct('FileDescription', 'VRKA Video Downloader'),
-         StringStruct('FileVersion', '3.5.0.12'),
+        [StringStruct('CompanyName', 'VRKA Authors'),
+         StringStruct('FileDescription', 'VRKA Desktop Media Downloader'),
+         StringStruct('FileVersion', '4.0.0.16'),
          StringStruct('InternalName', 'VRKA'),
          StringStruct('OriginalFilename', 'VRKA.exe'),
          StringStruct('ProductName', 'VRKA'),
-         StringStruct('LegalCopyright', 'Copyright © 2026 MVRK'),
-         StringStruct('ProductVersion', '3.5.0')]
+         StringStruct('LegalCopyright', 'Copyright (C) 2026 VRKA Authors'),
+         StringStruct('ProductVersion', '4.0.0')]
       )
     ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
