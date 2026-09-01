@@ -1,15 +1,15 @@
 """
 VRKA - Video Downloader
 ================================
-VRKA is a focused desktop media downloader built with yt-dlp and
-CustomTkinter. It supports a download queue, persistent history, playlists,
-cookies, subtitles, SponsorBlock, and advanced/custom yt-dlp commands.
+VRKA is a focused desktop media downloader backend built for Qt 6 QML with
+yt-dlp and browser fallback capabilities. It supports a durable download queue,
+persistent history, playlists, cookies, subtitles, and advanced media options.
 
 Author: MVRK
 Copyright © 2026 MVRK
 
 Requirements (install with pip):
-    pip install customtkinter yt-dlp curl_cffi
+    pip install -r requirements.txt
 
 Also requires FFmpeg to be installed and available on your system PATH.
 
@@ -86,9 +86,9 @@ from vrka_core import (
 )
 
 APP_NAME = "VRKA"
-APP_VERSION = "3.0.0"
-APP_BUILD = "011"
-APP_DISPLAY_VERSION = "3.0.0"
+APP_VERSION = "4.0.0"
+APP_BUILD = "016"
+APP_DISPLAY_VERSION = "4.0.0"
 APP_AUTHOR = "MVRK"
 APP_COPYRIGHT = "Copyright © 2026 MVRK"
 MAX_LOG_LINES = 1000

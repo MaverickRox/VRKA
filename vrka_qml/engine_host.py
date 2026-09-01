@@ -1,4 +1,4 @@
-"""Presentation-side engine host for the QML application (Stage 3+4).
+"""Presentation-side engine host for the QML application .
 
 Owns the unchanged build008/build010 engine surface: the durable
 ``Build008TaskAdapter`` (TaskScheduler + TaskStore inside vrka_core) and the
@@ -36,7 +36,7 @@ class EngineHost:
         )
         self.history: list[dict] = []
         self._core_adapter = app.Build008TaskAdapter(
-            store_path or (app.APP_DATA_DIR / "build010_tasks.json"),
+            store_path or (app.APP_DATA_DIR / "tasks.json"),
             self._resolve_core_task,
             self._execute_core_task,
             ui_queue,

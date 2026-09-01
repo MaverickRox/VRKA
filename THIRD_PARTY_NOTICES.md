@@ -1,41 +1,53 @@
 # Third-Party Notices
 
-VRKA 3.5 build 012 is built with the following pinned Python packages:
-
-- CustomTkinter 6.0.0
-- yt-dlp 2026.8.19
-- yt-dlp-ejs 0.8.0
-- curl_cffi 0.15.0
-- Pillow 12.3.0
-- PyInstaller 6.21.0
-- pywebview 6.2.1
-- PySide6 6.11.2 (LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only) — Qt 6 QML runtime
-  (shiboken6 6.11.2 included). Distributed as dynamically linked libraries inside
-  the installer; source at https://code.qt.io/cgit/pyside/pyside-setup.git and
-  https://www.qt.io/download-open-source. LGPL-3.0 permits this distribution as
-  bundled DLLs with this notice; no VRKA source disclosure is required for the
-  unmodified QML application. Users may replace the bundled PySide6/Qt DLLs
-  inside the PyInstaller `_MEIPASS` extraction (LGPL relinking right).
-
-The Windows package also bundles FFmpeg and FFprobe executables. Their upstream licences and notices remain applicable. A JavaScript runtime (Deno, Bun, Node.js, or QuickJS) is NOT bundled: when one is present on the user's system, yt-dlp may use it for YouTube challenge solving; without one, most downloads still work and yt-dlp degrades gracefully. yt-dlp can optionally fetch official challenge-solver components only when the user enables that setting.
-
-The protected-browser feature bundles uBlock Origin Lite (uBOL) 2026.812.1211 as a browser extension for content filtering. uBOL is distributed under the GPLv3 licence; the extension's own source and licence texts are included inside the bundled extension package (`assets/browser_protection/ubol.zip`, extracted to `%LOCALAPPDATA%\VRKA\browser-ext` at first use). The extension's filter-list rulesets (uBO filters, EasyList, EasyPrivacy, Peter Lowe's list, uBO Badware risks, and uBlock filters – URLhaus) remain the property of their respective maintainers and are licensed separately by them.
-
-Space Mono is Copyright 2016 The Space Mono Project Authors and is distributed under the SIL Open Font License 1.1. The complete licence text is included at `assets/fonts/OFL.txt`.
-
-VRKA's application source and branding remain subject to the project owner's terms. Third-party names and marks belong to their respective owners.
+VRKA 4.0.0 (Build 016) utilizes the following open-source components:
 
 ---
 
-## puemos/hls-downloader (media observer extension)
+## Direct Python Dependencies
 
-- Version: 5.5.0 (MV3-Chromium build extension-mv3-chrome.zip)
-- Source: https://github.com/puemos/hls-downloader
-- Upstream commit at tag v5.5.0: 408b43f7c0f73ea7efd4153199f3935e38e657eb
-- Artifact SHA-256: 39dc660989c8a219fd0f85e203e2a268486d40a18f743b43dde8a71c1f680a52
-- License: MIT (upstream LICENSE preserved in third_party/media_observer/puemos-hls-downloader/)
-- Files shipped: the unmodified upstream extension archive, bundled inside the
-  application executable (third_party/media_observer/puemos-hls-downloader/).
-- Modifications to upstream code: NONE.
-- Usage: passive media observation inside VRKA's own protected browser profile
-  only. The upstream downloader/muxer subsystems are not invoked by VRKA.
+| Package | Version | License | Upstream Project | Usage |
+| :--- | :--- | :--- | :--- | :--- |
+| **PySide6** | 6.11.2 | LGPL-3.0 / GPL-2.0 / GPL-3.0 | [https://code.qt.io/cgit/pyside/pyside-setup.git](https://code.qt.io/cgit/pyside/pyside-setup.git) | Native Qt 6 QML desktop GUI runtime. Distributed as dynamically linked libraries. |
+| **yt-dlp** | 2026.8.19 | The Unlicense | [https://github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) | Direct media extraction engine and metadata parser. |
+| **yt-dlp-ejs** | 0.8.0 | MIT | [https://github.com/yt-dlp/yt-dlp-ejs](https://github.com/yt-dlp/yt-dlp-ejs) | JavaScript evaluation integration for yt-dlp. |
+| **curl_cffi** | 0.15.0 | MIT | [https://github.com/yifeikong/curl_cffi](https://github.com/yifeikong/curl_cffi) | High-performance HTTP client bindings. |
+| **Pillow** | 12.3.0 | HPND / MIT-CMU | [https://github.com/python-pillow/Pillow](https://github.com/python-pillow/Pillow) | Image processing for icon and branding assets. |
+| **pywebview** | 6.2.1 | BSD-3-Clause | [https://github.com/r0x0r/pywebview](https://github.com/r0x0r/pywebview) | WebView2 wrapper for isolated browser fallback sessions. |
+| **PyInstaller** | 6.21.0 | GPL-2.0-or-later with exception | [https://github.com/pyinstaller/pyinstaller](https://github.com/pyinstaller/pyinstaller) | Build-time binary compiler for standalone Windows executables. |
+
+---
+
+## Bundled Subsystems & Browser Extensions
+
+### 1. uBlock Origin Lite (uBOL)
+- **Version**: 2026.812.1211
+- **License**: GNU General Public License v3.0 (GPLv3)
+- **Upstream**: [https://github.com/uBlockOrigin/uBOL-home](https://github.com/uBlockOrigin/uBOL-home)
+- **Archive**: `assets/browser_protection/ubol.zip`
+- **Usage**: Content filtering extension loaded into the isolated WebView2 session during Browser Fallback to block malicious scripts, popups, and nuisance ads. The extension's full source and license text are preserved inside the archive.
+
+### 2. puemos/hls-downloader
+- **Version**: 5.5.0 (MV3 Chromium Build)
+- **License**: MIT
+- **Upstream**: [https://github.com/puemos/hls-downloader](https://github.com/puemos/hls-downloader)
+- **Provenance**: `third_party/media_observer/puemos-hls-downloader/PROVENANCE-v5.5.0.md`
+- **Usage**: Passive media observer extension used exclusively within the isolated browser fallback profile to detect HLS master playlists and DASH streams.
+
+---
+
+## Typography & Fonts
+
+### Space Mono
+- **Designer**: Colophon Foundry
+- **Copyright**: Copyright 2016 The Space Mono Project Authors
+- **License**: SIL Open Font License 1.1 (`assets/fonts/OFL.txt`)
+
+---
+
+## External Media Tools
+
+### FFmpeg & FFprobe
+- **License**: LGPL-2.1-or-later / GPL-2.0-or-later
+- **Upstream**: [https://ffmpeg.org/](https://ffmpeg.org/)
+- **Integration**: VRKA interfaces with FFmpeg and FFprobe as external subprocesses via standard process pipes for stream multiplexing, audio conversion, and precision video trimming. No FFmpeg code is statically or dynamically linked into the core VRKA binaries.

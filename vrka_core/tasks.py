@@ -1,4 +1,4 @@
-"""Authoritative persistent task model for the build010 non-Flutter engine."""
+"""Authoritative persistent task model for the VRKA 4.0.0 engine."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Persistent single-worker FIFO scheduler for the build010 engine."""
+"""Persistent single-worker FIFO scheduler for the VRKA 4.0.0 engine."""
 
 from __future__ import annotations
 
@@ -97,7 +97,7 @@ class TaskScheduler:
         self._stopping = False
         self._started = False
         self._thread = threading.Thread(
-            target=self._worker, name="vrka-build010-fifo", daemon=False,
+            target=self._worker, name="vrka-fifo-worker", daemon=False,
         )
         if auto_start:
             self.start()

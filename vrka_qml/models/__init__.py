@@ -1,8 +1,4 @@
-"""Presentation models for the VRKA 3.5 QML layer (Stage 2).
-
-Models receive presentation data only; backend objects never cross this
-boundary.
-"""
+"""Presentation models for the VRKA 4.0 QML layer."""
 
 from .activity_log_model import ActivityLogModel
 from .history_model import HistoryListModel

@@ -1,4 +1,4 @@
-"""Stage 1-4 Qt Quick bootstrap for VRKA 3.5 (Build 012).
+"""Core Qt Quick bootstrap for VRKA 4.0.0 (Build 016).
 
 Presentation layer: loads the QML shell and wires the presentation bridge
 to the engine host. Stage 4 adds QueueController, restored-task seeding
@@ -26,8 +26,8 @@ from .settings_state import SettingsState
 
 # Active VRKA 3.5 application identity (the frozen 3.0 / Build 011 metadata in
 # vrka_downloader.py, version_info.txt and the installer stays untouched).
-APP_DISPLAY_VERSION = "3.5"
-APP_BUILD = "012"
+APP_DISPLAY_VERSION = "4.0.0"
+APP_BUILD = "016"
 
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
     PROJECT_ROOT = Path(sys._MEIPASS)

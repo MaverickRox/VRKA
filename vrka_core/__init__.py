@@ -1,4 +1,4 @@
-"""UI-neutral production core for VRKA 2.0.0 build010."""
+"""Production domain core for VRKA 4.0.0."""
 
 from .browser_capture import MediaBodyCapture
 from .browser_fallback import (
