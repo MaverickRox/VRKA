@@ -1,7 +1,7 @@
 customtkinter==6.0.0
 yt-dlp[default]==2026.8.19
 yt-dlp-ejs==0.8.0
-curl_cffi==0.15.0
+curl_cffi==0.16.2
 Pillow==12.3.0
 pyinstaller==6.21.0
 pywebview==6.2.1
