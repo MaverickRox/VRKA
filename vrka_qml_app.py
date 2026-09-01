@@ -43,9 +43,19 @@ if len(sys.argv) > 1 and sys.argv[1] in ("__vrka_protected_browser__", "__vrka_b
         }))
         sys.exit(0)
     if len(sys.argv) > 1 and sys.argv[1] == "__ytdlp_cli__":
+        cli_args = list(sys.argv[2:])
+        if not _vd._has_cli_option(cli_args, "--ffmpeg-location"):
+            ffmpeg_dir = _vd.resolve_ffmpeg_location()
+            if not ffmpeg_dir:
+                try:
+                    ffmpeg_dir = _vd.ensure_ffmpeg_runtime()
+                except Exception:
+                    ffmpeg_dir = None
+            if ffmpeg_dir:
+                cli_args = ["--ffmpeg-location", ffmpeg_dir] + cli_args
         try:
             import yt_dlp
-            sys.exit(yt_dlp.main(sys.argv[2:]))
+            sys.exit(yt_dlp.main(cli_args))
         except OSError:
             # Parent handed broken stdio (GUI subsystem exe); retry with devnull streams.
             import os as _os
@@ -59,7 +69,7 @@ if len(sys.argv) > 1 and sys.argv[1] in ("__vrka_protected_browser__", "__vrka_b
             except Exception:
                 pass
             import yt_dlp as _yt
-            sys.exit(_yt.main(sys.argv[2:]))
+            sys.exit(_yt.main(cli_args))
 
 from vrka_qml.app import main
 

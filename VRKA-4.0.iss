@@ -41,7 +41,7 @@ Type: files; Name: "{autoprograms}\Seal Desktop\Seal Desktop.lnk"
 
 [Files]
 Source: "VRKA-portable\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "VRKA-portable\ffmpeg_bin\*"; DestDir: "{app}\ffmpeg_bin"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "VRKA-portable\ffmpeg_bin\*"; DestDir: "{app}\ffmpeg_bin"; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
 Source: "assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 

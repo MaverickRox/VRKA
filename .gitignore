@@ -35,6 +35,7 @@ test_*.json
 # Build & Release Output
 outputs/
 installer_output/
+VRKA-portable/
 *.iss.tmp
 _MEI*/
 
