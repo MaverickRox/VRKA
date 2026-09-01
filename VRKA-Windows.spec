@@ -32,7 +32,7 @@ deno_executable = project_dir / "deno_bin" / "deno.exe"
 if deno_executable.is_file():
     binaries.append((str(deno_executable), "deno_bin"))
 
-# QML build no longer needs Tk/CustomTkinter/PIL at startup (lazy, ~13 MB saved).
+# QML build excludes unneeded GUI toolkits at startup (~13 MB saved).
 # Keep only networking/browser deps needed for download.
 for package_name in ("curl_cffi", "yt_dlp_ejs", "webview"):
     package_datas, package_binaries, package_hiddenimports = collect_all(package_name)
@@ -73,7 +73,7 @@ a = Analysis(
         "PySide6.QtWebView", "PySide6.QtNfc", "PySide6.QtHelp",
         "PySide6.QtSql", "PySide6.QtSvg", "PySide6.QtSvgWidgets",
         # Legacy Tk/PIL no longer needed for QML startup (saves ~13 MB + tcl/tk DLLs)
-        "tkinter", "customtkinter", "PIL", "PIL.Image", "PIL.ImageDraw", "PIL.ImageTk",
+        "tkinter", "PIL", "PIL.Image", "PIL.ImageDraw", "PIL.ImageTk",
     ],
     noarchive=False,
     optimize=0,

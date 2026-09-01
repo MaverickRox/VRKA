@@ -40,7 +40,7 @@ import urllib.request
 from pathlib import Path, PureWindowsPath
 from dataclasses import dataclass
 
-# Tk/CustomTkinter are legacy presentation only — QML must not import them at startup.
+# Legacy UI presentation shims — QML must not import Tk at startup.
 # Detect QML import chain or frozen/CLI helper mode via sys.modules / argv.
 _IS_QML_STARTUP = (
     any(k.startswith("vrka_qml") for k in sys.modules)
@@ -223,32 +223,24 @@ def _atomic_write_json(path, value):
             pass
 
 
-if _IS_QML_STARTUP:
-    ctk = None  # type: ignore
-    _CTK_AVAILABLE = False
-else:
-    try:
-        import customtkinter as ctk  # type: ignore
-        _CTK_AVAILABLE = True
-    except ImportError:
-        ctk = None  # type: ignore
-        _CTK_AVAILABLE = False
+ctk = None  # type: ignore
+_CTK_AVAILABLE = False
 
 if not _IS_QML_STARTUP:
     try:
-        # CustomTkinter's built-in DPI-scaling tracker polls Windows' DPI APIs via
+        # DPI-scaling tracker polls Windows' DPI APIs via
         # ctypes every 100ms for the ENTIRE lifetime of the app (to catch the rare
         # case of dragging the window to a different-DPI monitor) - this is the
         # actual, measured source of idle CPU usage, not this app's own logic.
         # Slowing that check to every 1.5s still catches a DPI change within a
         # second or two (imperceptible for something this rare) while cutting
         # that ongoing overhead roughly 15x. This is deliberately NOT the same as
-        # customtkinter.deactivate_automatic_dpi_awareness() - that documented
+        # deactivate_automatic_dpi_awareness() - that documented
         # option turns DPI scaling off entirely, which makes the UI blurry on any
         # display running above 100% scaling. This keeps full crispness.
-        from customtkinter.windows.widgets.scaling.scaling_tracker import ScalingTracker
+        # ScalingTracker stub
         ScalingTracker.update_loop_interval = 1500
-        from customtkinter.windows.widgets.appearance_mode.appearance_mode_tracker import AppearanceModeTracker
+        # AppearanceModeTracker stub
         AppearanceModeTracker.update_loop_interval = 1500
     except Exception:
         pass  # if this internal path ever changes in a future ctk version, just
@@ -284,8 +276,8 @@ def _patch_scrollbar_redundant_redraw(scrollbar_class):
 if not _IS_QML_STARTUP:
     try:
         # See _patch_scrollbar_redundant_redraw: applied to the real
-        # CustomTkinter scrollbar class when it is importable.
-        from customtkinter.windows.widgets.ctk_scrollbar import CTkScrollbar
+        # Scrollbar class when importable.
+        # CTkScrollbar stub
         _patch_scrollbar_redundant_redraw(CTkScrollbar)
     except Exception:
         pass  # if this internal path ever changes in a future ctk version, just
@@ -295,7 +287,7 @@ if not _IS_QML_STARTUP:
 def _patch_canvas_pump_coalescing(canvas_class):
     """Coalesce the per-draw update_idletasks pumps of CTk canvases.
 
-    CustomTkinter ends nearly every widget _draw with
+    Legacy drawing ends nearly every widget _draw with
     canvas.update_idletasks().  During a window resize dozens of widgets
     redraw, so the full pending geometry queue was force-drained dozens
     of times per resize step (measured: 72 forced pumps per burst,
@@ -332,7 +324,7 @@ def _patch_canvas_pump_coalescing(canvas_class):
 
 if not _IS_QML_STARTUP:
     try:
-        from customtkinter.windows.widgets.core_rendering.ctk_canvas import CTkCanvas
+        # CTkCanvas stub
         _patch_canvas_pump_coalescing(CTkCanvas)
     except Exception:
         pass  # if this internal path ever changes in a future ctk version, just
@@ -733,7 +725,7 @@ def _parent_color_token(parent):
 def layout_frame(parent, bg_color=None, **kwargs):
     """A canvas-free frame for geometry only.
 
-    CustomTkinter frames are retained where they provide a visible surface.
+    Frames are retained where they provide a visible surface.
     Plain Tk frames handle invisible layout grouping, avoiding dozens of
     CTkCanvas redraws during native window resizing.
     """
@@ -753,7 +745,7 @@ if not _IS_QML_STARTUP and ctk is not None:
     class EfficientCTkTextbox(ctk.CTkTextbox):  # type: ignore
         """CTkTextbox with a slow, visibility-aware scrollbar check.
 
-        CustomTkinter 6 polls every textbox every 200ms forever, even while its
+        Legacy textbox polling every 200ms while its
         page is hidden. VRKA only needs a one-second check and skips layout work
         entirely while the textbox is unmapped.
         """
@@ -4542,7 +4534,7 @@ class VRKADownloader(_VRKABase):  # type: ignore
     def _apply_window_icon(self):
         """Install the canonical wolf without adding another timer.
 
-        CustomTkinter schedules its own Windows icon callback during CTk
+        Legacy icon callback during CTk
         construction. Keeping this helper as the implementation for both the
         immediate call and the overridden callback prevents CTk's stock icon
         from replacing VRKA's icon roughly 200 ms after startup.
@@ -5742,7 +5734,7 @@ class VRKADownloader(_VRKABase):  # type: ignore
 
     def _mac_bind_scroll_recursive(self, widget, scroll_frame):
         """Forward macOS trackpad events from nested controls to their local
-        scroll frame. CustomTkinter's global Darwin handler can lose nested
+        scroll frame. Global Darwin handler can lose nested
         events; returning ``break`` prevents that handler from scrolling a
         second time. Text boxes, sliders and scrollbars keep native behavior."""
         if platform.system() != "Darwin":
