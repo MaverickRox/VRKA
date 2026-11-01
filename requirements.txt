@@ -4,6 +4,6 @@ curl_cffi==0.15.0
 Pillow==12.3.0
 pyinstaller==6.21.0
 pywebview==6.2.1
-PySide6==6.11.2
+PySide6==6.12.0
 pgpy==0.6.0
 cryptography>=50.0.0
